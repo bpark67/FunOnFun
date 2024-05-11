@@ -1,11 +1,11 @@
 Package: FunOnFun
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Conducts Function on Function Regression Based on Irregular MFPCA
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Bumjun Park
+Maintainer: Bumjun Park <bpark67@uw.edu>
+Description: Conducting function on function regression using MFPCA results from 
+    sparsely(irregularly) observed functional data.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
