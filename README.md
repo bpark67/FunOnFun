@@ -102,7 +102,7 @@ matlines(apply(t(X$X), 1, mean),
          col="red")
 ```
 
-<img src="man/figures/README-unnamed-chunk-38-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
 
 ``` r
 
@@ -119,7 +119,7 @@ matlines(apply(t(Y$X), 1, mean),
          col = "red")
 ```
 
-<img src="man/figures/README-unnamed-chunk-38-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-7-2.png" width="100%" />
 
 ## Simulate Missingness
 
@@ -172,15 +172,69 @@ res_Y2 = fdapace::FPCA(df_Y$Variable2,
 ## Visualize FPCA
 
 ``` r
-# phi_X1_df = Y$phi[101:200,] %>% as.data.frame()
-# 
-# res_Y2$phi[, 1:3] %>%
-#   as.data.frame() %>%
-#   ggplot() +
-#   geom_line(aes(x = t, y = V3), col = "red") +
-#   geom_line(data = phi_X1_df, aes(x = t, y = V3), col = "red", linetype = "dashed") +
-#   theme_bw()
+act = data.frame(act1 = Y$mu[1:100],
+                 act2 = Y$mu[101:200])
+hat = data.frame(hat1 = res_Y1$mu,
+                 hat2 = res_Y2$mu)
+
+hat %>%
+  ggplot() +
+  geom_line(aes(x = seq(0, 1, length.out = 100), y = hat1)) +
+  geom_line(data = act, aes(x = seq(0, 1, length.out = 100), y = act1), linetype = "dashed") +
+  theme_bw()
 ```
+
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
+
+``` r
+
+hat %>%
+  ggplot() +
+  geom_line(aes(x = seq(0, 1, length.out = 100), y = hat2)) +
+  geom_line(data = act, aes(x = seq(0, 1, length.out = 100), y = act2), linetype = "dashed") +
+  theme_bw()
+```
+
+<img src="man/figures/README-unnamed-chunk-11-2.png" width="100%" />
+
+``` r
+
+
+phi_X2_df = Y$phi[101:200,] %>% as.data.frame()
+
+res_Y2$phi[, 1:3] %>%
+  as.data.frame() %>%
+  ggplot() +
+  geom_line(aes(x = t, y = V1), col = "red") +
+  geom_line(data = phi_X2_df, aes(x = t, y = V1), col = "red", linetype = "dashed") +
+  theme_bw()
+```
+
+<img src="man/figures/README-unnamed-chunk-11-3.png" width="100%" />
+
+``` r
+
+res_Y2$phi[, 1:3] %>%
+  as.data.frame() %>%
+  ggplot() +
+  geom_line(aes(x = t, y = V2), col = "red") +
+  geom_line(data = phi_X2_df, aes(x = t, y = V2), col = "red", linetype = "dashed") +
+  theme_bw()
+```
+
+<img src="man/figures/README-unnamed-chunk-11-4.png" width="100%" />
+
+``` r
+
+res_Y2$phi[, 1:3] %>%
+  as.data.frame() %>%
+  ggplot() +
+  geom_line(aes(x = t, y = V3), col = "red") +
+  geom_line(data = phi_X2_df, aes(x = t, y = V3), col = "red", linetype = "dashed") +
+  theme_bw()
+```
+
+<img src="man/figures/README-unnamed-chunk-11-5.png" width="100%" />
 
 ## Irregular MFPCA
 
@@ -214,7 +268,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-45-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" />
 
 ``` r
 
@@ -226,7 +280,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-45-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-14-2.png" width="100%" />
 
 ``` r
 
@@ -238,7 +292,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-45-3.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-14-3.png" width="100%" />
 
 ``` r
 
@@ -250,7 +304,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-45-4.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-14-4.png" width="100%" />
 
 ``` r
 
@@ -262,7 +316,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-45-5.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-14-5.png" width="100%" />
 
 ``` r
 
@@ -274,7 +328,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-45-6.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-14-6.png" width="100%" />
 
 ``` r
 
@@ -294,7 +348,7 @@ eigens %>%
 #> `geom_smooth()` using formula = 'y ~ x'
 ```
 
-<img src="man/figures/README-unnamed-chunk-45-7.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-14-7.png" width="100%" />
 
 ``` r
 
@@ -307,7 +361,7 @@ eigens %>%
 #> `geom_smooth()` using formula = 'y ~ x'
 ```
 
-<img src="man/figures/README-unnamed-chunk-45-8.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-14-8.png" width="100%" />
 
 ``` r
 
@@ -320,7 +374,7 @@ eigens %>%
 #> `geom_smooth()` using formula = 'y ~ x'
 ```
 
-<img src="man/figures/README-unnamed-chunk-45-9.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-14-9.png" width="100%" />
 
 ``` r
 eigenf = res_Y$unstacked_phi
@@ -338,7 +392,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-47-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-16-1.png" width="100%" />
 
 ``` r
 
@@ -350,7 +404,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-47-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-16-2.png" width="100%" />
 
 ``` r
 
@@ -362,7 +416,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-47-3.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-16-3.png" width="100%" />
 
 ``` r
 
@@ -374,7 +428,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-47-4.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-16-4.png" width="100%" />
 
 ``` r
 
@@ -386,7 +440,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-47-5.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-16-5.png" width="100%" />
 
 ``` r
 
@@ -398,7 +452,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-47-6.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-16-6.png" width="100%" />
 
 ``` r
 
@@ -418,7 +472,7 @@ eigens %>%
 #> `geom_smooth()` using formula = 'y ~ x'
 ```
 
-<img src="man/figures/README-unnamed-chunk-47-7.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-16-7.png" width="100%" />
 
 ``` r
 
@@ -431,7 +485,7 @@ eigens %>%
 #> `geom_smooth()` using formula = 'y ~ x'
 ```
 
-<img src="man/figures/README-unnamed-chunk-47-8.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-16-8.png" width="100%" />
 
 ``` r
 
@@ -444,7 +498,7 @@ eigens %>%
 #> `geom_smooth()` using formula = 'y ~ x'
 ```
 
-<img src="man/figures/README-unnamed-chunk-47-9.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-16-9.png" width="100%" />
 
 ## Regression
 
