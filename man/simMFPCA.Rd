@@ -2,13 +2,42 @@
 % Please edit documentation in R/simMFPCA.R
 \name{simMFPCA}
 \alias{simMFPCA}
-\title{A function to simulate MFPCA data}
+\title{A function to generate randomly simulated data for multivariate functional principal component analysis}
 \usage{
-simMFPCA()
+simMFPCA(
+  seed,
+  t,
+  n,
+  components,
+  mean_funs,
+  eigen_funs_list,
+  lambdas,
+  response = FALSE,
+  B = NULL
+)
+}
+\arguments{
+\item{seed}{A seed for random number generation}
+
+\item{t}{A vector of time points}
+
+\item{n}{Number of subjects}
+
+\item{components}{Number of principal components}
+
+\item{mean_funs}{A list of functions to generate mean functions for each variable}
+
+\item{eigen_funs_list}{A list of lists of functions to generate eigenfunctions for each variable}
+
+\item{lambdas}{A vector of magnitudes of eigenvalues}
+
+\item{response}{A logical indicating whether the data is a response or a covariate}
+
+\item{B}{A matrix of regression coefficients for the response data}
 }
 \value{
-A tibble
+A list of simulated data
 }
 \description{
-A function to simulate MFPCA data
+A function to generate randomly simulated data for multivariate functional principal component analysis
 }
