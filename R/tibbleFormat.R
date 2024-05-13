@@ -37,6 +37,13 @@
   return(long_data)
 }
 
+#' A function to convert a matrix into a tibble
+#'
+#' @param dat A matrix of data
+#' @param t A vector of time points
+#'
+#' @return A tibble of data
+#' @export
 tibbleFormat = function(dat, t){
   stopifnot(is.matrix(dat))
   stopifnot(ncol(dat) %% length(t) == 0)

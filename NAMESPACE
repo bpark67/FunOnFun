@@ -2,6 +2,8 @@
 
 export("%>%")
 export(fpcaFormat)
+export(irregMFPCA)
 export(simMFPCA)
 export(simMiss)
+export(tibbleFormat)
 importFrom(magrittr,"%>%")

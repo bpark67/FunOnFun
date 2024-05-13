@@ -4,10 +4,12 @@
 \alias{fpcaFormat}
 \title{A function to format data for FPCA}
 \usage{
-fpcaFormat(dat)
+fpcaFormat(dat, id_col)
 }
 \arguments{
 \item{dat}{A data frame of data}
+
+\item{id_col}{Designates the column that contains the unique identifier for each subject}
 }
 \value{
 A tibble of data in FPCA format

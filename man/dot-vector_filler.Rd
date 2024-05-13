@@ -4,7 +4,7 @@
 \alias{.vector_filler}
 \title{A function to fill an empty vector with values from a data frame}
 \usage{
-.vector_filler(v, target, source, uid)
+.vector_filler(v, target, source, id_col, uid)
 }
 \arguments{
 \item{v}{A vector to fill}
@@ -12,6 +12,8 @@
 \item{target}{The target column to fill}
 
 \item{source}{The source data frame}
+
+\item{id_col}{The column that contains the unique identifier for each subject}
 
 \item{uid}{A unique identifier for each subject}
 }

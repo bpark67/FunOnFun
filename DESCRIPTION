@@ -17,3 +17,9 @@ Imports:
     tsibble,
     tibble,
     brolgar
+Suggests:
+    testthat,
+    knitr,
+    rmarkdown,
+    fdapace,
+    ggplot2
