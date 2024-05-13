@@ -124,5 +124,10 @@ matlines(apply(t(Y$X), 1, mean),
          col = "red")
 ```
 
+## Simulate Missingness
+
+```{r}
+X_miss = FunOnFun::simMiss(99, X$X, t, seed = 51)
+```
 
 

@@ -12,4 +12,8 @@ LazyData: true
 RoxygenNote: 7.3.0
 Imports: 
     magrittr,
-    dplyr
+    dplyr,
+    purrr,
+    tsibble,
+    tibble,
+    brolgar

@@ -100,7 +100,7 @@ matlines(apply(t(X$X), 1, mean),
          col="red")
 ```
 
-<img src="man/figures/README-unnamed-chunk-12-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
 
 ``` r
 
@@ -117,4 +117,10 @@ matlines(apply(t(Y$X), 1, mean),
          col = "red")
 ```
 
-<img src="man/figures/README-unnamed-chunk-12-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-2.png" width="100%" />
+
+## Simulate Missingness
+
+``` r
+X_miss = FunOnFun::simMiss(99, X$X, t, seed = 51)
+```
