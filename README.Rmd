@@ -86,9 +86,11 @@ eigen_funs_list = list(
   )
 )
 
-B = matrix(c(-1, 2, 3, -1, -9, 3, 5, 5, -3),
+B = matrix(c(-1, 2, 3, -1, 1, 3, 5, 5, -3),
            nrow = components,
            ncol = components)
+
+# B = diag(c(3, 3, 3))
 
 Y = FunOnFun::simMFPCA(16, t, n, 3, mean_funs, eigen_funs_list, lambdas, response = TRUE, B = B)
 sigma = 0.001
@@ -319,7 +321,7 @@ eigens %>%
 ```{r}
 eigenf = res_Y$unstacked_phi
 colnames(eigenf) = c("var_1_1", "var_1_2", "var_1_3", "var_2_1", "var_2_2", "var_2_3")
-eigens = res_Y$xi
+eigens = res_Y$xi %>% sweep(2, sqrt(diag(res_Y$Dhat)), "/")
 colnames(eigens) = c("comp_1", "comp_2", "comp_3")
 ```
 
@@ -366,12 +368,15 @@ eigenf %>%
   geom_line(aes(x = seq(0, 1, length.out = 100), y = Y$phi[101:200, 3]), col = "black", linetype = "dotted") +
   theme_bw()
 
-eigens = data.frame(est1 = eigens[,1]/sqrt(res_Y$Dhat[1,1]),
-                    est2 = eigens[,2]/sqrt(res_Y$Dhat[2,2]),
-                    est3 = eigens[,3]/sqrt(res_Y$Dhat[3,3]),
-                    act1 = Y$xi[, 1],
-                    act2 = Y$xi[, 2],
-                    act3 = Y$xi[, 3])
+
+act = qr.Q(qr(Y$xi %*% B)) * sqrt(199)
+
+eigens = data.frame(est1 = eigens[,1],
+                    est2 = eigens[,2],
+                    est3 = eigens[,3],
+                    act1 = -act[, 1],
+                    act2 = act[, 2],
+                    act3 = -act[, 3])
 
 eigens %>%
   ggplot(aes(x = est1, y = act1)) +
@@ -399,13 +404,26 @@ eigens %>%
 ## Regression
 
 ```{r}
-response = res_Y$xi
-predictor = res$xi
+# response = res_Y$xi
+# predictor = res$xi
+
+# Normalized Versions
+predictor = sweep(res$xi, 2, sqrt(diag(res$Dhat)), "/")
+response = sweep(res_Y$xi, 2, sqrt(diag(res_Y$Dhat)), "/")
+
 
 mod = lm(response ~ -1 + predictor)
 
 B; mod$coefficients
+
+t(mod$coefficients) %*% mod$coefficients
 ```
+
+```{r}
+Y$phi %*% B %*% t(X$phi) %>% heatmap(Rowv = NA, Colv = NA)
+res_Y$stacked_phi %*% mod$coefficients %*% t(res$stacked_phi) %>% heatmap(Rowv = NA, Colv = NA)
+```
+
 
 
 

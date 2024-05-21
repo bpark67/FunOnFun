@@ -75,9 +75,11 @@ eigen_funs_list = list(
   )
 )
 
-B = matrix(c(-1, 2, 3, -1, -9, 3, 5, 5, -3),
+B = matrix(c(-1, 2, 3, -1, 1, 3, 5, 5, -3),
            nrow = components,
            ncol = components)
+
+# B = diag(c(3, 3, 3))
 
 Y = FunOnFun::simMFPCA(16, t, n, 3, mean_funs, eigen_funs_list, lambdas, response = TRUE, B = B)
 sigma = 0.001
@@ -102,7 +104,7 @@ matlines(apply(t(X$X), 1, mean),
          col="red")
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-46-1.png" width="100%" />
 
 ``` r
 
@@ -119,7 +121,7 @@ matlines(apply(t(Y$X), 1, mean),
          col = "red")
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-46-2.png" width="100%" />
 
 ## Simulate Missingness
 
@@ -184,7 +186,7 @@ hat %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-50-1.png" width="100%" />
 
 ``` r
 
@@ -195,7 +197,7 @@ hat %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-11-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-50-2.png" width="100%" />
 
 ``` r
 
@@ -210,7 +212,7 @@ res_Y2$phi[, 1:3] %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-11-3.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-50-3.png" width="100%" />
 
 ``` r
 
@@ -222,7 +224,7 @@ res_Y2$phi[, 1:3] %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-11-4.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-50-4.png" width="100%" />
 
 ``` r
 
@@ -234,7 +236,7 @@ res_Y2$phi[, 1:3] %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-11-5.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-50-5.png" width="100%" />
 
 ## Irregular MFPCA
 
@@ -268,7 +270,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-53-1.png" width="100%" />
 
 ``` r
 
@@ -280,7 +282,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-53-2.png" width="100%" />
 
 ``` r
 
@@ -292,7 +294,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-3.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-53-3.png" width="100%" />
 
 ``` r
 
@@ -304,7 +306,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-4.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-53-4.png" width="100%" />
 
 ``` r
 
@@ -316,7 +318,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-5.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-53-5.png" width="100%" />
 
 ``` r
 
@@ -328,7 +330,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-6.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-53-6.png" width="100%" />
 
 ``` r
 
@@ -348,7 +350,7 @@ eigens %>%
 #> `geom_smooth()` using formula = 'y ~ x'
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-7.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-53-7.png" width="100%" />
 
 ``` r
 
@@ -361,7 +363,7 @@ eigens %>%
 #> `geom_smooth()` using formula = 'y ~ x'
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-8.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-53-8.png" width="100%" />
 
 ``` r
 
@@ -374,12 +376,12 @@ eigens %>%
 #> `geom_smooth()` using formula = 'y ~ x'
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-9.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-53-9.png" width="100%" />
 
 ``` r
 eigenf = res_Y$unstacked_phi
 colnames(eigenf) = c("var_1_1", "var_1_2", "var_1_3", "var_2_1", "var_2_2", "var_2_3")
-eigens = res_Y$xi
+eigens = res_Y$xi %>% sweep(2, sqrt(diag(res_Y$Dhat)), "/")
 colnames(eigens) = c("comp_1", "comp_2", "comp_3")
 ```
 
@@ -392,7 +394,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-16-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-55-1.png" width="100%" />
 
 ``` r
 
@@ -404,7 +406,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-16-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-55-2.png" width="100%" />
 
 ``` r
 
@@ -416,7 +418,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-16-3.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-55-3.png" width="100%" />
 
 ``` r
 
@@ -428,7 +430,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-16-4.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-55-4.png" width="100%" />
 
 ``` r
 
@@ -440,7 +442,7 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-16-5.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-55-5.png" width="100%" />
 
 ``` r
 
@@ -452,16 +454,19 @@ eigenf %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-16-6.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-55-6.png" width="100%" />
 
 ``` r
 
-eigens = data.frame(est1 = eigens[,1]/sqrt(res_Y$Dhat[1,1]),
-                    est2 = eigens[,2]/sqrt(res_Y$Dhat[2,2]),
-                    est3 = eigens[,3]/sqrt(res_Y$Dhat[3,3]),
-                    act1 = Y$xi[, 1],
-                    act2 = Y$xi[, 2],
-                    act3 = Y$xi[, 3])
+
+act = qr.Q(qr(Y$xi %*% B)) * sqrt(199)
+
+eigens = data.frame(est1 = eigens[,1],
+                    est2 = eigens[,2],
+                    est3 = eigens[,3],
+                    act1 = -act[, 1],
+                    act2 = act[, 2],
+                    act3 = -act[, 3])
 
 eigens %>%
   ggplot(aes(x = est1, y = act1)) +
@@ -472,7 +477,7 @@ eigens %>%
 #> `geom_smooth()` using formula = 'y ~ x'
 ```
 
-<img src="man/figures/README-unnamed-chunk-16-7.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-55-7.png" width="100%" />
 
 ``` r
 
@@ -485,7 +490,7 @@ eigens %>%
 #> `geom_smooth()` using formula = 'y ~ x'
 ```
 
-<img src="man/figures/README-unnamed-chunk-16-8.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-55-8.png" width="100%" />
 
 ``` r
 
@@ -498,23 +503,46 @@ eigens %>%
 #> `geom_smooth()` using formula = 'y ~ x'
 ```
 
-<img src="man/figures/README-unnamed-chunk-16-9.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-55-9.png" width="100%" />
 
 ## Regression
 
 ``` r
-response = res_Y$xi
-predictor = res$xi
+# response = res_Y$xi
+# predictor = res$xi
+
+# Normalized Versions
+predictor = sweep(res$xi, 2, sqrt(diag(res$Dhat)), "/")
+response = sweep(res_Y$xi, 2, sqrt(diag(res_Y$Dhat)), "/")
+
 
 mod = lm(response ~ -1 + predictor)
 
 B; mod$coefficients
 #>      [,1] [,2] [,3]
 #> [1,]   -1   -1    5
-#> [2,]    2   -9    5
+#> [2,]    2    1    5
 #> [3,]    3    3   -3
-#>                 [,1]       [,2]       [,3]
-#> predictor1  1.547973  0.8665041 -0.6766258
-#> predictor2 -9.643038  1.5481153 -0.2327695
-#> predictor3  6.048158 16.2177891  1.1154167
+#>                  [,1]       [,2]       [,3]
+#> predictor1 -0.1747657 -0.6758188 -0.7154803
+#> predictor2 -0.4557008  0.7001524 -0.5494227
+#> predictor3 -0.8727301 -0.2302841  0.4299648
+
+t(mod$coefficients) %*% mod$coefficients
+#>              [,1]          [,2]          [,3]
+#> [1,] 9.998641e-01  2.584728e-05  0.0001705220
+#> [2,] 2.584728e-05  9.999752e-01 -0.0001586448
+#> [3,] 1.705220e-04 -1.586448e-04  0.9986470741
 ```
+
+``` r
+Y$phi %*% B %*% t(X$phi) %>% heatmap(Rowv = NA, Colv = NA)
+```
+
+<img src="man/figures/README-unnamed-chunk-57-1.png" width="100%" />
+
+``` r
+res_Y$stacked_phi %*% mod$coefficients %*% t(res$stacked_phi) %>% heatmap(Rowv = NA, Colv = NA)
+```
+
+<img src="man/figures/README-unnamed-chunk-57-2.png" width="100%" />
