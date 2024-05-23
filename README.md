@@ -6,6 +6,15 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
+## Purpose
+
+This package does multivariate functional Principal Component Analysis
+(MFPCA) and then conducts function on function regression the MFPCA
+scores.
+
+- The URL to the [GitHub](https://github.com/bpar67/FunOnFun)
+- The URL to the [Website](https://bpark67.github.io/FunOnFun/)
+
 ## Installation
 
 You can install the development version of FunOnFun from
@@ -16,533 +25,74 @@ You can install the development version of FunOnFun from
 devtools::install_github("bpark67/FunOnFun")
 ```
 
-## Simulate Data
+## Dependencies
 
-### Covariates
+This package depends on `magrittr`, `dplyr`, `purrr`, `tsibble`,
+`tibble`, `brolgar`.
 
-``` r
-library(FunOnFun)
-library(fdapace)
-library(ggplot2)
+## Session Info
 
-t = seq(0, 1, length.out = 100)
-
-n = 199
-
-components = 3
-
-mean_funs = list(
-  function(t) -2*(t-0.5)^2 + 5,
-  function(t) 3*(t-0.75)^3 - 5
-  )
-
-eigen_funs_list = list(
-  list(
-    function(t) sin(2*pi*t),
-    function(t) sin(4*pi*t),
-    function(t) sin(6*pi*t)
-  ),
-  list(
-    function(t) cos(3*pi*t),
-    function(t) cos(pi*t),
-    function(t) cos(5*pi*t)
-  )
-)
-
-lambdas = c(5, 3, 1)
-
-X = FunOnFun::simMFPCA(16, t, n, 3, mean_funs, eigen_funs_list, lambdas, response = FALSE)
-```
-
-### Response
+This tool was developed using the following R session:
 
 ``` r
-mean_funs = list(
-  function(t) 6*exp(-(t-1)^2),
-  function(t) -2*14^(t-0.5)
-)
-
-eigen_funs_list = list(
-  list(
-    function(t) cos(9*pi*t),
-    function(t) cos(5*pi*t),
-    function(t) cos(2*pi*t)
-  ),
-  list(
-    function(t) sin(3*pi*t),
-    function(t) sin(5*pi*t),
-    function(t) sin(7*pi*t)
-  )
-)
-
-B = matrix(c(-1, 2, 3, -1, 1, 3, 5, 5, -3),
-           nrow = components,
-           ncol = components)
-
-# B = diag(c(3, 3, 3))
-
-Y = FunOnFun::simMFPCA(16, t, n, 3, mean_funs, eigen_funs_list, lambdas, response = TRUE, B = B)
-sigma = 0.001
-E = matrix(rnorm(2*length(t)*n, mean = 0, sd = sigma), n, 2*length(t))
-
-Y$X = Y$X + E
+devtools::session_info()
+#> ─ Session info ───────────────────────────────────────────────────────────────
+#>  setting  value
+#>  version  R version 4.3.3 (2024-02-29)
+#>  os       macOS Sonoma 14.4.1
+#>  system   x86_64, darwin20
+#>  ui       X11
+#>  language (EN)
+#>  collate  en_US.UTF-8
+#>  ctype    en_US.UTF-8
+#>  tz       America/Los_Angeles
+#>  date     2024-05-23
+#>  pandoc   3.1.11 @ /Applications/RStudio.app/Contents/Resources/app/quarto/bin/tools/x86_64/ (via rmarkdown)
+#> 
+#> ─ Packages ───────────────────────────────────────────────────────────────────
+#>  package     * version date (UTC) lib source
+#>  cachem        1.1.0   2024-05-16 [1] CRAN (R 4.3.3)
+#>  cli           3.6.2   2023-12-11 [1] CRAN (R 4.3.0)
+#>  devtools      2.4.5   2022-10-11 [1] CRAN (R 4.3.0)
+#>  digest        0.6.35  2024-03-11 [1] CRAN (R 4.3.2)
+#>  ellipsis      0.3.2   2021-04-29 [1] CRAN (R 4.3.0)
+#>  evaluate      0.23    2023-11-01 [1] CRAN (R 4.3.0)
+#>  fastmap       1.2.0   2024-05-15 [1] CRAN (R 4.3.3)
+#>  fs            1.6.4   2024-04-25 [1] CRAN (R 4.3.2)
+#>  glue          1.7.0   2024-01-09 [1] CRAN (R 4.3.0)
+#>  htmltools     0.5.8.1 2024-04-04 [1] CRAN (R 4.3.2)
+#>  htmlwidgets   1.6.4   2023-12-06 [1] CRAN (R 4.3.0)
+#>  httpuv        1.6.15  2024-03-26 [1] CRAN (R 4.3.2)
+#>  knitr         1.45    2023-10-30 [1] CRAN (R 4.3.0)
+#>  later         1.3.2   2023-12-06 [1] CRAN (R 4.3.0)
+#>  lifecycle     1.0.4   2023-11-07 [1] CRAN (R 4.3.0)
+#>  magrittr      2.0.3   2022-03-30 [1] CRAN (R 4.3.0)
+#>  memoise       2.0.1   2021-11-26 [1] CRAN (R 4.3.0)
+#>  mime          0.12    2021-09-28 [1] CRAN (R 4.3.0)
+#>  miniUI        0.1.1.1 2018-05-18 [1] CRAN (R 4.3.0)
+#>  pkgbuild      1.4.4   2024-03-17 [1] CRAN (R 4.3.2)
+#>  pkgload       1.3.4   2024-01-16 [1] CRAN (R 4.3.0)
+#>  profvis       0.3.8   2023-05-02 [1] CRAN (R 4.3.0)
+#>  promises      1.3.0   2024-04-05 [1] CRAN (R 4.3.2)
+#>  purrr         1.0.2   2023-08-10 [1] CRAN (R 4.3.0)
+#>  R6            2.5.1   2021-08-19 [1] CRAN (R 4.3.0)
+#>  Rcpp          1.0.12  2024-01-09 [1] CRAN (R 4.3.0)
+#>  remotes       2.5.0   2024-03-17 [1] CRAN (R 4.3.2)
+#>  rlang         1.1.3   2024-01-10 [1] CRAN (R 4.3.0)
+#>  rmarkdown     2.27    2024-05-17 [1] CRAN (R 4.3.3)
+#>  rstudioapi    0.16.0  2024-03-24 [1] CRAN (R 4.3.2)
+#>  sessioninfo   1.2.2   2021-12-06 [1] CRAN (R 4.3.0)
+#>  shiny         1.8.1.1 2024-04-02 [1] CRAN (R 4.3.2)
+#>  stringi       1.8.4   2024-05-06 [1] CRAN (R 4.3.2)
+#>  stringr       1.5.1   2023-11-14 [1] CRAN (R 4.3.0)
+#>  urlchecker    1.0.1   2021-11-30 [1] CRAN (R 4.3.0)
+#>  usethis       2.2.3   2024-02-19 [1] CRAN (R 4.3.2)
+#>  vctrs         0.6.5   2023-12-01 [1] CRAN (R 4.3.0)
+#>  xfun          0.44    2024-05-15 [1] CRAN (R 4.3.3)
+#>  xtable        1.8-4   2019-04-21 [1] CRAN (R 4.3.0)
+#>  yaml          2.3.8   2023-12-11 [1] CRAN (R 4.3.0)
+#> 
+#>  [1] /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/library
+#> 
+#> ──────────────────────────────────────────────────────────────────────────────
 ```
-
-## Plot Simulated Data
-
-``` r
-matplot(t(X$X), 
-        type='l', 
-        ylab='X(t)', 
-        xlab='time', 
-        main='Plot of predictor curves', 
-        col=rgb(0,0,0,alpha=0.4))
-matlines(apply(t(X$X), 1, mean),
-         type='l',
-         lwd=3,
-         lty=1,
-         col="red")
-```
-
-<img src="man/figures/README-unnamed-chunk-46-1.png" width="100%" />
-
-``` r
-
-matplot(t(Y$X), 
-        type='l', 
-        ylab='Y(t)', 
-        xlab='time', 
-        main='Plot of response curves', 
-        col=rgb(0,0,0,alpha=0.6))
-matlines(apply(t(Y$X), 1, mean),
-         type='l',
-         lwd=3,
-         lty=1,
-         col = "red")
-```
-
-<img src="man/figures/README-unnamed-chunk-46-2.png" width="100%" />
-
-## Simulate Missingness
-
-``` r
-X_miss = FunOnFun::simMiss(99, X$X, t, seed = 51)
-Y_miss = FunOnFun::simMiss(99, Y$X, t, seed = 51)
-```
-
-## FPCA
-
-``` r
-df = X_miss %>% FunOnFun::tibbleFormat(t) %>% FunOnFun::fpcaFormat(id_col = "id")
-df_Y = Y_miss %>% FunOnFun::tibbleFormat(t) %>% FunOnFun::fpcaFormat(id_col = "id")
-```
-
-``` r
-res_X1 = fdapace::FPCA(df$Variable1,
-                       df$Time,
-                       list(dataType = "Sparse",
-                            error = F,
-                            kernel = "epan",
-                            verbose = F,
-                            nRegGrid = length(t)))
-
-res_X2 = fdapace::FPCA(df$Variable2,
-                       df$Time,
-                       list(dataType = "Sparse",
-                            error = F,
-                            kernel = "epan",
-                            verbose = F,
-                            nRegGrid = length(t)))
-
-res_Y1 = fdapace::FPCA(df_Y$Variable1,
-                       df_Y$Time,
-                       list(dataType = "Sparse",
-                            error = T,
-                            kernel = "epan",
-                            verbose = F,
-                            nRegGrid = length(t)))
-res_Y2 = fdapace::FPCA(df_Y$Variable2,
-                       df_Y$Time,
-                       list(dataType = "Sparse",
-                            error = T,
-                            kernel = "epan",
-                            verbose = F,
-                            nRegGrid = length(t),
-                            methodSelectK = 3)) # TODO: CHECK THIS
-```
-
-## Visualize FPCA
-
-``` r
-act = data.frame(act1 = Y$mu[1:100],
-                 act2 = Y$mu[101:200])
-hat = data.frame(hat1 = res_Y1$mu,
-                 hat2 = res_Y2$mu)
-
-hat %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = hat1)) +
-  geom_line(data = act, aes(x = seq(0, 1, length.out = 100), y = act1), linetype = "dashed") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-50-1.png" width="100%" />
-
-``` r
-
-hat %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = hat2)) +
-  geom_line(data = act, aes(x = seq(0, 1, length.out = 100), y = act2), linetype = "dashed") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-50-2.png" width="100%" />
-
-``` r
-
-
-phi_X2_df = Y$phi[101:200,] %>% as.data.frame()
-
-res_Y2$phi[, 1:3] %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = t, y = V1), col = "red") +
-  geom_line(data = phi_X2_df, aes(x = t, y = V1), col = "red", linetype = "dashed") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-50-3.png" width="100%" />
-
-``` r
-
-res_Y2$phi[, 1:3] %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = t, y = V2), col = "red") +
-  geom_line(data = phi_X2_df, aes(x = t, y = V2), col = "red", linetype = "dashed") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-50-4.png" width="100%" />
-
-``` r
-
-res_Y2$phi[, 1:3] %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = t, y = V3), col = "red") +
-  geom_line(data = phi_X2_df, aes(x = t, y = V3), col = "red", linetype = "dashed") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-50-5.png" width="100%" />
-
-## Irregular MFPCA
-
-``` r
-res = FunOnFun::irregMFPCA(components = 3,
-                           split = T,
-                           res_X1,
-                           res_X2)
-
-res_Y = FunOnFun::irregMFPCA(components = 3,
-                             split = T,
-                             res_Y1,
-                             res_Y2)
-```
-
-### Check results
-
-``` r
-eigenf = res$unstacked_phi
-colnames(eigenf) = c("var_1_1", "var_1_2", "var_1_3", "var_2_1", "var_2_2", "var_2_3")
-eigens = res$xi
-colnames(eigens) = c("comp_1", "comp_2", "comp_3")
-```
-
-``` r
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = var_1_1), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = X$phi[1:100, 1]), col = "black", linetype = "dotted") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-53-1.png" width="100%" />
-
-``` r
-
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_1_2), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = X$phi[1:100, 2]), col = "black", linetype = "dotted") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-53-2.png" width="100%" />
-
-``` r
-
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_1_3), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = X$phi[1:100, 3]), col = "black", linetype = "dotted") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-53-3.png" width="100%" />
-
-``` r
-
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = var_2_1), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = X$phi[101:200, 1]), col = "black", linetype = "dotted") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-53-4.png" width="100%" />
-
-``` r
-
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_2_2), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = X$phi[101:200, 2]), col = "black", linetype = "dotted") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-53-5.png" width="100%" />
-
-``` r
-
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_2_3), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = X$phi[101:200, 3]), col = "black", linetype = "dotted") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-53-6.png" width="100%" />
-
-``` r
-
-eigens = data.frame(est1 = eigens[,1]/sqrt(res$Dhat[1,1]),
-                    est2 = eigens[,2]/sqrt(res$Dhat[2,2]),
-                    est3 = eigens[,3]/sqrt(res$Dhat[3,3]),
-                    act1 = X$xi[, 1],
-                    act2 = X$xi[, 2],
-                    act3 = X$xi[, 3])
-
-eigens %>%
-  ggplot(aes(x = est1, y = act1)) +
-  geom_point() +
-  geom_abline(intercept = 0, slope = 1, col = "red") +
-  geom_smooth(method = "lm", se = F) +
-  theme_bw()
-#> `geom_smooth()` using formula = 'y ~ x'
-```
-
-<img src="man/figures/README-unnamed-chunk-53-7.png" width="100%" />
-
-``` r
-
-eigens %>%
-  ggplot(aes(x = -est2, y = act2)) +
-  geom_point() +
-  geom_abline(intercept = 0, slope = 1, col = "red") +
-  geom_smooth(method = "lm", se = F) +
-  theme_bw()
-#> `geom_smooth()` using formula = 'y ~ x'
-```
-
-<img src="man/figures/README-unnamed-chunk-53-8.png" width="100%" />
-
-``` r
-
-eigens %>%
-  ggplot(aes(x = -est3, y = act3)) +
-  geom_point() +
-  geom_abline(intercept = 0, slope = 1, col = "red") +
-  geom_smooth(method = "lm", se = F) +
-  theme_bw()
-#> `geom_smooth()` using formula = 'y ~ x'
-```
-
-<img src="man/figures/README-unnamed-chunk-53-9.png" width="100%" />
-
-``` r
-eigenf = res_Y$unstacked_phi
-colnames(eigenf) = c("var_1_1", "var_1_2", "var_1_3", "var_2_1", "var_2_2", "var_2_3")
-eigens = res_Y$xi %>% sweep(2, sqrt(diag(res_Y$Dhat)), "/")
-colnames(eigens) = c("comp_1", "comp_2", "comp_3")
-```
-
-``` r
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = var_1_1), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = Y$phi[1:100, 1]), col = "black", linetype = "dotted") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-55-1.png" width="100%" />
-
-``` r
-
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_1_2), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = Y$phi[1:100, 2]), col = "black", linetype = "dotted") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-55-2.png" width="100%" />
-
-``` r
-
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_1_3), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = Y$phi[1:100, 3]), col = "black", linetype = "dotted") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-55-3.png" width="100%" />
-
-``` r
-
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = var_2_1), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = Y$phi[101:200, 1]), col = "black", linetype = "dotted") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-55-4.png" width="100%" />
-
-``` r
-
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_2_2), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = Y$phi[101:200, 2]), col = "black", linetype = "dotted") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-55-5.png" width="100%" />
-
-``` r
-
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_2_3), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = Y$phi[101:200, 3]), col = "black", linetype = "dotted") +
-  theme_bw()
-```
-
-<img src="man/figures/README-unnamed-chunk-55-6.png" width="100%" />
-
-``` r
-
-
-act = qr.Q(qr(Y$xi %*% B)) * sqrt(199)
-
-eigens = data.frame(est1 = eigens[,1],
-                    est2 = eigens[,2],
-                    est3 = eigens[,3],
-                    act1 = -act[, 1],
-                    act2 = act[, 2],
-                    act3 = -act[, 3])
-
-eigens %>%
-  ggplot(aes(x = est1, y = act1)) +
-  geom_point() +
-  geom_abline(intercept = 0, slope = 1, col = "red") +
-  geom_smooth(method = "lm", se = F) +
-  theme_bw()
-#> `geom_smooth()` using formula = 'y ~ x'
-```
-
-<img src="man/figures/README-unnamed-chunk-55-7.png" width="100%" />
-
-``` r
-
-eigens %>%
-  ggplot(aes(x = -est2, y = act2)) +
-  geom_point() +
-  geom_abline(intercept = 0, slope = 1, col = "red") +
-  geom_smooth(method = "lm", se = F) +
-  theme_bw()
-#> `geom_smooth()` using formula = 'y ~ x'
-```
-
-<img src="man/figures/README-unnamed-chunk-55-8.png" width="100%" />
-
-``` r
-
-eigens %>%
-  ggplot(aes(x = -est3, y = act3)) +
-  geom_point() +
-  geom_abline(intercept = 0, slope = 1, col = "red") +
-  geom_smooth(method = "lm", se = F) +
-  theme_bw()
-#> `geom_smooth()` using formula = 'y ~ x'
-```
-
-<img src="man/figures/README-unnamed-chunk-55-9.png" width="100%" />
-
-## Regression
-
-``` r
-# response = res_Y$xi
-# predictor = res$xi
-
-# Normalized Versions
-predictor = sweep(res$xi, 2, sqrt(diag(res$Dhat)), "/")
-response = sweep(res_Y$xi, 2, sqrt(diag(res_Y$Dhat)), "/")
-
-
-mod = lm(response ~ -1 + predictor)
-
-B; mod$coefficients
-#>      [,1] [,2] [,3]
-#> [1,]   -1   -1    5
-#> [2,]    2    1    5
-#> [3,]    3    3   -3
-#>                  [,1]       [,2]       [,3]
-#> predictor1 -0.1747657 -0.6758188 -0.7154803
-#> predictor2 -0.4557008  0.7001524 -0.5494227
-#> predictor3 -0.8727301 -0.2302841  0.4299648
-
-t(mod$coefficients) %*% mod$coefficients
-#>              [,1]          [,2]          [,3]
-#> [1,] 9.998641e-01  2.584728e-05  0.0001705220
-#> [2,] 2.584728e-05  9.999752e-01 -0.0001586448
-#> [3,] 1.705220e-04 -1.586448e-04  0.9986470741
-```
-
-``` r
-Y$phi %*% B %*% t(X$phi) %>% heatmap(Rowv = NA, Colv = NA)
-```
-
-<img src="man/figures/README-unnamed-chunk-57-1.png" width="100%" />
-
-``` r
-res_Y$stacked_phi %*% mod$coefficients %*% t(res$stacked_phi) %>% heatmap(Rowv = NA, Colv = NA)
-```
-
-<img src="man/figures/README-unnamed-chunk-57-2.png" width="100%" />
