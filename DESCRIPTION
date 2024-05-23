@@ -24,3 +24,4 @@ Suggests:
     fdapace,
     ggplot2
 VignetteBuilder: knitr
+URL: https://bpark67.github.io/FunOnFun/
