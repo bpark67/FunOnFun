@@ -321,49 +321,6 @@ colnames(eigens) = c("comp_1", "comp_2", "comp_3")
 ```
 
 ```{r}
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = var_1_1), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = Y$phi[1:100, 1]), col = "black", linetype = "dotted") +
-  theme_bw()
-
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_1_2), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = Y$phi[1:100, 2]), col = "black", linetype = "dotted") +
-  theme_bw()
-
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_1_3), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = Y$phi[1:100, 3]), col = "black", linetype = "dotted") +
-  theme_bw()
-
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = var_2_1), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = Y$phi[101:200, 1]), col = "black", linetype = "dotted") +
-  theme_bw()
-
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_2_2), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = Y$phi[101:200, 2]), col = "black", linetype = "dotted") +
-  theme_bw()
-
-eigenf %>%
-  as.data.frame() %>%
-  ggplot() +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_2_3), col = "red") +
-  geom_line(aes(x = seq(0, 1, length.out = 100), y = Y$phi[101:200, 3]), col = "black", linetype = "dotted") +
-  theme_bw()
-
-
 act = qr.Q(qr(Y$xi %*% B)) * sqrt(199)
 
 eigens = data.frame(est1 = eigens[,1],
@@ -372,6 +329,51 @@ eigens = data.frame(est1 = eigens[,1],
                     act1 = -act[, 1],
                     act2 = act[, 2],
                     act3 = -act[, 3])
+
+guess_actual_functions = Y$phi %*% eigen(t(B)%*%B)$vectors %>% as.data.frame()
+
+eigenf %>%
+  as.data.frame() %>%
+  ggplot() +
+  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_1_1), col = "red") +
+  geom_line(aes(x = seq(0, 1, length.out = 100), y = guess_actual_functions[1:100, 1]), col = "black", linetype = "dotted") +
+  theme_bw()
+
+eigenf %>%
+  as.data.frame() %>%
+  ggplot() +
+  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_1_2), col = "red") +
+  geom_line(aes(x = seq(0, 1, length.out = 100), y = guess_actual_functions[1:100, 2]), col = "black", linetype = "dotted") +
+  theme_bw()
+
+eigenf %>%
+  as.data.frame() %>%
+  ggplot() +
+  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_1_3), col = "red") +
+  geom_line(aes(x = seq(0, 1, length.out = 100), y = guess_actual_functions[1:100, 3]), col = "black", linetype = "dotted") +
+  theme_bw()
+
+eigenf %>%
+  as.data.frame() %>%
+  ggplot() +
+  geom_line(aes(x = seq(0, 1, length.out = 100), y = var_2_1), col = "red") +
+  geom_line(aes(x = seq(0, 1, length.out = 100), y = guess_actual_functions[101:200, 1]), col = "black", linetype = "dotted") +
+  theme_bw()
+
+eigenf %>%
+  as.data.frame() %>%
+  ggplot() +
+  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_2_2), col = "red") +
+  geom_line(aes(x = seq(0, 1, length.out = 100), y = guess_actual_functions[101:200, 2]), col = "black", linetype = "dotted") +
+  theme_bw()
+
+eigenf %>%
+  as.data.frame() %>%
+  ggplot() +
+  geom_line(aes(x = seq(0, 1, length.out = 100), y = -var_2_3), col = "red") +
+  geom_line(aes(x = seq(0, 1, length.out = 100), y = guess_actual_functions[101:200, 3]), col = "black", linetype = "dotted") +
+  theme_bw()
+
 
 eigens %>%
   ggplot(aes(x = est1, y = act1)) +

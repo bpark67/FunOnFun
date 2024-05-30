@@ -1,4 +1,6 @@
 url: https://bpark67.github.io/FunOnFun/
 template:
   bootstrap: 5
+  bootswatch: lux
+  pkgdown-nav-height: 100px
 
