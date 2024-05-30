@@ -22,6 +22,7 @@ Suggests:
     knitr,
     rmarkdown,
     fdapace,
-    ggplot2
+    ggplot2,
+    tidyverse
 VignetteBuilder: knitr
 URL: https://bpark67.github.io/FunOnFun/
