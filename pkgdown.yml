@@ -3,8 +3,8 @@ pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   FunOnFun: FunOnFun.html
-  Simulated_Data_Analysis: Simulated_Data_Analysis.html
-last_built: 2024-05-30T20:18Z
+  Simulation-Study: Simulation-Study.html
+last_built: 2024-06-05T01:36Z
 urls:
   reference: https://bpark67.github.io/FunOnFun/reference
   article: https://bpark67.github.io/FunOnFun/articles
