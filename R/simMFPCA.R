@@ -112,7 +112,7 @@ simMFPCA = function(seed, t, n, components, mean_funs, eigen_funs_list, lambdas,
 
   # Generate the data
   if(response){
-    X = xi %*% B %*% D %*% t(phi) + rep(1, n) %*% t(mu)
+    X = xi %*% D %*% B %*% t(phi) + rep(1, n) %*% t(mu)
   }else{
     X = xi %*% D %*% t(phi) + rep(1, n) %*% t(mu)
   }

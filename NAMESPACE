@@ -3,6 +3,7 @@
 export("%>%")
 export(fpcaFormat)
 export(irregMFPCA)
+export(mip)
 export(simMFPCA)
 export(simMiss)
 export(tibbleFormat)
