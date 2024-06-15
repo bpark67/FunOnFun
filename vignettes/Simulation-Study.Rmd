@@ -99,23 +99,34 @@ Y$X = Y$X + E
 ### Orthogonalize Response
 
 ```{r}
-cov_Y = Y$phi %*% t(B) %*% t(Y$D) %*% Y$D %*% B %*% t(Y$phi) + diag(rep(sigma^2, 2*length(t)))
+# cov_Y = Y$phi %*% t(B) %*% t(Y$D) %*% Y$D %*% B %*% t(Y$phi) + diag(rep(sigma^2, 2*length(t)))
+
+popEig = FunOnFun::populationEigen(Y, B, t, sigma)
 
 par(mfrow=c(1, 2))
-image(cov_Y)
+image(popEig$pop_covY)
 image(cov(Y$X))
 ```
 
 ### Population Eigenfunctions (Orthogonalized)
 
 ```{r}
-phi_Y_df = (eigen(cov_Y)$vectors[, 1:3]*sqrt(2*length(t))) %>% as.data.frame()
+# TODO: Make this into a function too; get phi_Y_df, Y_xi_pop, and B_PC_PC
+# TODO: Create a FunOnFun regression function that returns B;
+# TODO: Make simMFPCA return a class
 
-Y_xi_pop = Y$X %*% (eigen(cov_Y)$vectors[, 1:3])/sqrt(2*length(t))
+# phi_Y_df = (eigen(cov_Y)$vectors[, 1:3]*sqrt(2*length(t))) %>% as.data.frame()
+popEig$pop_phiY
 
-B_PC_PC = B %*% t(Y$phi) %*% (eigen(cov_Y)$vectors[, 1:3])/sqrt(2*length(t))
+# Y_xi_pop = Y$X %*% (eigen(cov_Y)$vectors[, 1:3])/sqrt(2*length(t))
+popEig$pop_xiY
 
-t(B_PC_PC) %*% Y$D %*% Y$D %*% B_PC_PC
+# B_PC_PC = B %*% t(Y$phi) %*% (eigen(cov_Y)$vectors[, 1:3])/sqrt(2*length(t))
+popEig$pop_B
+
+# t(B_PC_PC) %*% Y$D %*% Y$D %*% B_PC_PC
+
+t(popEig$pop_B) %*% Y$D %*% Y$D %*% popEig$pop_B
 ```
 
 
