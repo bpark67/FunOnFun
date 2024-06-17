@@ -2,9 +2,13 @@
 
 export("%>%")
 export(fpcaFormat)
+export(funOnFun)
 export(irregMFPCA)
 export(mip)
+export(populationBeta)
 export(populationEigen)
+export(populationReg)
+export(reconBeta)
 export(simMFPCA)
 export(simMiss)
 export(tibbleFormat)

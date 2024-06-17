@@ -1,5 +1,3 @@
-
-
 #' A function to perform irregular MFPCA
 #'
 #' @param components Number of principal components to consider
@@ -62,24 +60,29 @@ irregMFPCA = function(components = NULL, split = F, ...){
   if(split == T){
     spl = split(1:ncol(Xhat), ceiling(1:ncol(Xhat)/(nrow(eigs_all)/J)))
     list_Xhat = lapply(spl, function(c) Xhat[,c])
-    return(list(
+    return(structure(list(
       "unstacked_phi" = psi,
       "stacked_phi" = stack,
       "xi" = rho,
       "Dhat" = t(rho) %*% rho / N,
       "Xhat" = list_Xhat
+    ),
+    class = "irregMFPCA"
     )
     )
   }else{
-    return(list(
+    return(structure(
+      list(
       "unstacked_phi" = psi,
       "stacked_phi" = stack,
       "xi" = rho,
       "Dhat" = t(rho) %*% rho / N,
       "Xhat" = Xhat
+    ),
+      class = "irregMFPCA"
     )
-    )
-  }
+  )
+}
 
 
 
@@ -88,17 +91,20 @@ irregMFPCA = function(components = NULL, split = F, ...){
     if(split == T){
       spl = split(1:ncol(Xhat), ceiling(1:ncol(Xhat)/51))
       list_Xhat = lapply(spl, function(c) Xhat[,c])
-      return(list("unstackpsi" = psi,
-                  "stackpsi" = stack,
+      return(structure(list("unstacked_phi" = psi,
+                  "stacked_phi" = stack,
                   "rho" = rho,
                   "Dhat" = t(rho) %*% rho / N,
-                  "Xhat" = list_Xhat))
+                  "Xhat" = list_Xhat),
+                  class = "irregMFPCA")
+             )
     }else{
-      return(list("unstackpsi" = psi,
-                  "stackpsi" = stack,
+      return(structure(list("unstacked_phi" = psi,
+                  "stacked_phi" = stack,
                   "rho" = rho,
                   "Dhat" = t(rho) %*% rho / N,
-                  "Xhat" = Xhat))
+                  "Xhat" = Xhat),
+                  class = "irregMFPCA"))
     }
   }
 }
