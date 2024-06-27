@@ -30,39 +30,61 @@
 #'
 #' @param dat A data frame of data
 #' @param id_col Designates the column that contains the unique identifier for each subject
+#' @param var_cols A vector of column names that contain the variables of interest
 #'
 #' @return A tibble of data in FPCA format
 #' @export
-fpcaFormat = function(dat, id_col){
+fpcaFormat = function(dat, id_col, var_cols = NULL){
   # Grab the number of components
-  C = ncol(dat)-3
+  if(is.null(var_cols)){
+    C = ncol(dat)-3
+  } else {
+    C = length(var_cols)
+  }
 
   # Convert to FPCA friendly format
   df_tib = dat %>% dplyr::as_tibble()
 
   # Define variables
-  uid = unique(df_tib$id)
+  uid = df_tib %>% dplyr::pull(id_col) %>% unique()
 
   N = length(uid)
   Time = rep(0,N)
 
   for(c in 1:C){
-    assign(paste0("Variable", c), rep(0, N))
+    if(is.null(var_cols)){
+      assign(paste0("Variable", c), rep(0, N))
+    } else {
+      assign(var_cols[c], rep(0, N))
+    }
   }
 
   # Fill list with vectors of observation for each person
   Time = .vector_filler(Time, target = "t", source = df_tib, id_col = id_col, uid = uid)
 
   for(c in 1:C){
-    assign(paste0("Variable", c),
-           .vector_filler(get(paste0("Variable", c)),
-                         target = paste0("variable", c),
-                         source = df_tib,
-                         id_col = id_col,
-                         uid = uid))
+    if(is.null(var_cols)){
+      assign(paste0("Variable", c),
+             .vector_filler(get(paste0("Variable", c)),
+                           target = paste0("variable", c),
+                           source = df_tib,
+                           id_col = id_col,
+                           uid))
+    } else {
+      assign(var_cols[c],
+             .vector_filler(get(var_cols[c]),
+                           target = var_cols[c],
+                           source = df_tib,
+                           id_col = id_col,
+                           uid))
+    }
   }
 
-  vars = dplyr::syms(c("uid", "Time", paste0("Variable", 1:C)))
+  if(is.null(var_cols)){
+    vars = dplyr::syms(c("uid", "Time", paste0("Variable", 1:C)))
+  } else {
+    vars = dplyr::syms(c("uid", "Time", var_cols))
+  }
 
   return(tibble::tibble(!!!vars))
 }

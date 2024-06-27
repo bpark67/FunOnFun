@@ -12,7 +12,10 @@ funOnFun = function(resp, pred){
 
   mod = stats::lm(resp$xi ~ 0 + pred$xi)
 
-  return(mod$coefficients)
+  return(list(
+    Bhat = mod$coefficients,
+    mod = mod
+  ))
 }
 
 #' Function to return estimand of `funOnFun`

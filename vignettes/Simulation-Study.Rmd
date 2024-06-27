@@ -1,10 +1,10 @@
 ---
-title: "Simulated_Data_Analysis"
+title: "Simulation Study"
 output: 
   rmarkdown::html_vignette: default
   github_document: default
 vignette: >
-  %\VignetteIndexEntry{Simulated_Data_Analysis}
+  %\VignetteIndexEntry{Simulation-Study}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -504,7 +504,7 @@ Bestimand = FunOnFun::populationReg(X, popEig$pop_xiY)
 
 
 
-popEig$pop_B; Bhat
+Bestimand; Bhat$Bhat; popEig$pop_B
 ```
 
 ### 2D Comparison
@@ -514,7 +514,7 @@ popEig$pop_B; Bhat
 population = FunOnFun::populationBeta(popEig$pop_covY, popEig$pop_B, t, X)
 
 # estimated = res_Y$stacked_phi %*% mod$coefficients %*%  t(res$stacked_phi)
-estimated = FunOnFun::reconBeta(res_Y, res, Bhat)
+estimated = FunOnFun::reconBeta(res_Y, res, Bhat$Bhat)
 
 fig1 <- plotly::plot_ly(z = population, 
                         type = "heatmap", 
