@@ -1,90 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/404.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/articles/FunOnFun.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/articles/Simulation-Study.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/index.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/dot-generate_mu.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/dot-generate_phi.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/dot-generate_xi.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/dot-longFormat.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/dot-normalizer.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/dot-stack_phi.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/dot-vector_filler.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/fpcaFormat.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/funOnFun.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/irregMFPCA.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/mip.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/populationBeta.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/populationEigen.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/populationReg.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/reconBeta.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/regularizeTime.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/simMFPCA.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/simMiss.html</loc>
-  </url>
-  <url>
-    <loc>https://bpark67.github.io/FunOnFun/reference/tibbleFormat.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://bpark67.github.io/FunOnFun/404.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/LICENSE-text.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/LICENSE.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/articles/FunOnFun.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/articles/Simulation-Study.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/articles/index.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/authors.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/index.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/dot-generate_mu.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/dot-generate_phi.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/dot-generate_xi.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/dot-longFormat.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/dot-normalizer.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/dot-stack_phi.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/dot-vector_filler.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/fpcaFormat.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/funOnFun.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/index.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/irregMFPCA.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/mip.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/pipe.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/populationBeta.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/populationEigen.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/populationReg.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/reconBeta.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/regularizeTime.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/simMFPCA.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/simMiss.html</loc></url>
+<url><loc>https://bpark67.github.io/FunOnFun/reference/tibbleFormat.html</loc></url>
 </urlset>
+
