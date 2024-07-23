@@ -13,7 +13,7 @@ funOnFun = function(resp, pred){
   mod = stats::lm(resp$xi ~ 0 + pred$xi)
 
   return(list(
-    Bhat = mod$coefficients,
+    Bhat = as.matrix(mod$coefficients),
     mod = mod
   ))
 }

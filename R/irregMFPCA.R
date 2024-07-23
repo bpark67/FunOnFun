@@ -41,7 +41,7 @@ irregMFPCA = function(components = NULL, split = F, ...){
 
   spl = split(1:ncol(psi), ceiling(1:ncol(psi)/Mplus))
   list_psi = lapply(spl, function(c) psi[,c])
-  stack = do.call(rbind, list_psi)
+  stack = do.call(rbind, list_psi) %>% as.matrix()
 
   rho = XiEst %*% cm
   rho = sqrt(J)^(-1)*rho
@@ -52,7 +52,7 @@ irregMFPCA = function(components = NULL, split = F, ...){
     cols = 1:components
     for(j in 2:J){cols = append(cols, 1:components + Mplus)}
     psi = psi[, cols]
-    stack = stack[, 1:components]
+    stack = stack[, 1:components, drop = F]
     rho = rho[, 1:components]
     Xhat = rho %*% t(stack)
   }

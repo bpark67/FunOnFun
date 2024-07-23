@@ -15,7 +15,7 @@ library(patchwork)
 # TODO: Integrate data to package
 tp1 = read.csv("../../walli.csv")[c(1, 6, 7, 8, 9)] %>%
   stats::na.omit() %>%
-#  filter(max_wt_1 > 0) %>% # Lose 13 observations that were all 0
+  filter(max_wt_1 > 0) %>% # Lose 13 observations that were all 0
   dplyr::arrange(plaque_id) %>%
   dplyr::mutate(norm_wall = wa_1/(wa_1 + la_1),
          wt_rat = max_wt_1/min_wt_1) %>%
@@ -23,7 +23,7 @@ tp1 = read.csv("../../walli.csv")[c(1, 6, 7, 8, 9)] %>%
 
 tp2 = read.csv("../../walli.csv")[c(1, 15, 16, 17, 18)] %>%
   stats::na.omit() %>%
-#  filter(max_wt_2 > 0) %>% # Different number of observations!
+  filter(max_wt_2 > 0) %>% # Different number of observations!
   dplyr::arrange(plaque_id) %>%
   dplyr::mutate(norm_wall = wa_2/(wa_2 + la_2),
          wt_rat = max_wt_2/min_wt_2) %>%
@@ -108,7 +108,7 @@ p2 = mus %>%
 p1|p2
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 ### Eigenfunctions
 
@@ -161,26 +161,26 @@ p4 = eigs %>%
 p1|p2;
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ``` r
 p3|p4
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-26-2.png)<!-- -->
 
 ## MFPCA
 
 ``` r
 res_pred = FunOnFun::irregMFPCA(
-  components = 5,
+  components = 14,
   split = T,
   res_X1,
   res_X2
 )
 
 res_resp = FunOnFun::irregMFPCA(
-  components = 5,
+  components = 13,
   split = T,
   res_Y1,
   res_Y2
@@ -200,7 +200,7 @@ plotly::plot_ly(z = Betahat,
                 zmax = max(Betahat))
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
 ### 3D Plot
 
@@ -219,4 +219,69 @@ fig = plotly::plot_ly(showscale = F) %>%
 fig
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
+
+## CV for Optimal Number of Eigenfunctions
+
+``` r
+cvMatrix = FunOnFun::cvfunOnFun(
+  seed = 16,
+  predictor = res_pred,
+  response = res_resp,
+  actual = tp2,
+  folds = 10
+)
+
+which(cvMatrix == min(cvMatrix), 
+      arr.ind = T)
+#>      row col
+#> [1,]   3   1
+```
+
+### Conduct Regression
+
+``` r
+res_pred = FunOnFun::irregMFPCA(
+  components = 3,
+  split = T,
+  res_X1,
+  res_X2
+)
+
+res_resp = FunOnFun::irregMFPCA(
+  components = 1,
+  split = T,
+  res_Y1,
+  res_Y2
+)
+
+Bhat = FunOnFun::funOnFun(res_resp, res_pred)
+Betahat = FunOnFun::reconBeta(res_resp, res_pred, Bhat$Bhat)
+
+
+plotly::plot_ly(z = Betahat, 
+                type = "heatmap", 
+                zmin = min(Betahat),
+                zmax = max(Betahat))
+```
+
+![](WALLI_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
+
+### 3D Plot
+
+``` r
+estimated_colorscale <- list(
+  list(0, "rgb(255, 0, 0)"),
+  list(1, "rgb(0, 255, 0)")
+)
+
+fig = plotly::plot_ly(showscale = F) %>% 
+  plotly::add_surface(z = ~Betahat, 
+                      cmin = min(Betahat),
+                      cmax = max(Betahat),
+                      colorscale = estimated_colorscale)
+
+fig
+```
+
+![](WALLI_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->

@@ -11,7 +11,7 @@ reconBeta = function(resp, pred, Bhat){
   stopifnot(class(resp) == "irregMFPCA")
   stopifnot(class(pred) == "irregMFPCA")
 
-  return(resp$stacked_phi %*% Bhat %*% t(pred$stacked_phi))
+  return(resp$stacked_phi %*% t(Bhat) %*% t(pred$stacked_phi))
 }
 
 #' A function to reconstruct the estimand, the population beta matrix, from the predictor `simMFPCA` object

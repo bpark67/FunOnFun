@@ -16,7 +16,8 @@ Imports:
     purrr,
     tsibble,
     tibble,
-    brolgar
+    brolgar,
+    caret
 Suggests:
     testthat,
     knitr,
