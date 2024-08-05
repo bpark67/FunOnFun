@@ -32,8 +32,9 @@ cvfunOnFun = function(seed, predictor, response, actual, folds = 10){
   set.seed(seed)
 
   # Get Length of time points
-  time_points = nrow(predictor$unstacked_phi)
-  nvars = nrow(predictor$stacked_phi) / time_points
+  time_points_x = nrow(predictor$unstacked_phi)
+  time_points_y = nrow(response$unstacked_phi)
+  nvars = nrow(predictor$stacked_phi) / time_points_x
 
   # Create folds
   fld = caret::createFolds(1:nrow(predictor$xi), k = folds, list = F)
@@ -71,15 +72,15 @@ cvfunOnFun = function(seed, predictor, response, actual, folds = 10){
         # Change column names
         # Append a time variable
         colnames(orighat) = fld_case
-        orighat$t = rep(seq(0, 1, length.out = time_points), nvars)
+        orighat$t = rep(seq(0, 1, length.out = time_points_y), nvars)
 
         # Loop over all cases
         MSEs = rep(NA, sum(fld == k))
 
         for (case in fld_case){
           # Find closest function values from our estimated functions
-          closest = .closest_t(actual$Time[[case]], seq(0, 1, length.out = time_points))
-          increment = rep(0:(nvars-1) * time_points, each = length(closest))
+          closest = .closest_t(actual$Time[[case]], seq(0, 1, length.out = time_points_y))
+          increment = rep(0:(nvars-1) * time_points_y, each = length(closest))
 
           final = rep(closest, nvars) + increment
           # Pull out corresponding estimates of the original
