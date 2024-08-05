@@ -142,12 +142,11 @@ delta %>%
   labs(title = "Normalized Wall Area at TP1",
        x = "Time",
        y = "Normalized Wall Area") +
-  facet_wrap(~side) +
   scale_x_continuous(breaks = c(0, 1), labels = c("Start of Vessel", "End of Vessel"))+
   theme(legend.position = "none",
         axis.text.x = element_text(angle = -90)) +
   scale_color_manual(values = c("salmon", "cornflowerblue")) +
-  stat_smooth(aes(group = side), method = "loess", se = F, color = "black") -> wa1
+  stat_smooth(aes(group = 1), method = "loess", se = F, color = "black") -> wa1
 
 delta %>%
   ggplot(aes(x = t, y = wt_rat_x, group = plaque_id, color = side)) +
@@ -156,12 +155,11 @@ delta %>%
   labs(title = "Width Ratio at TP1",
        x = "Time",
        y = "Width Ratio") +
-  facet_wrap(~side) +
   scale_x_continuous(breaks = c(0, 1), labels = c("Start of Vessel", "End of Vessel"))+
   theme(legend.position = "none",
         axis.text.x = element_text(angle = -90)) +
   scale_color_manual(values = c("salmon", "cornflowerblue")) +
-  stat_smooth(aes(group = side), method = "loess", se = F, color = "black") -> wt1
+  stat_smooth(aes(group = 1), method = "loess", se = F, color = "black") -> wt1
 
 delta %>%
   ggplot(aes(x = t, y = norm_wall_y, group = plaque_id, color = side)) +
@@ -170,12 +168,11 @@ delta %>%
   labs(title = "Normalized Wall Area at TP2",
        x = "Time",
        y = "Normalized Wall Area") +
-  facet_wrap(~side) +
   scale_x_continuous(breaks = c(0, 1), labels = c("Start of Vessel", "End of Vessel"))+
   theme(legend.position = "none",
         axis.text.x = element_text(angle = -90)) +
   scale_color_manual(values = c("salmon", "cornflowerblue")) +
-  stat_smooth(aes(group = side), method = "loess", se = F, color = "black") -> wa2
+  stat_smooth(aes(group = 1), method = "loess", se = F, color = "black") -> wa2
 
 delta %>%
   ggplot(aes(x = t, y = wt_rat_y, group = plaque_id, color = side)) +
@@ -184,12 +181,11 @@ delta %>%
   labs(title = "Width Ratio at TP2",
        x = "Time",
        y = "Width Ratio") +
-  facet_wrap(~side) +
   scale_x_continuous(breaks = c(0, 1), labels = c("Start of Vessel", "End of Vessel"))+
   theme(legend.position = "none",
         axis.text.x = element_text(angle = -90)) +
   scale_color_manual(values = c("salmon", "cornflowerblue")) +
-  stat_smooth(aes(group = side), method = "loess", se = F, color = "black") -> wt2
+  stat_smooth(aes(group = 1), method = "loess", se = F, color = "black") -> wt2
 
 delta %>%
   ggplot(aes(x = t, y = norm_wall, group = plaque_id, color = side)) +
@@ -198,12 +194,11 @@ delta %>%
   labs(title = "Change in Normalized Wall Area Between Time Points",
        x = "Time",
        y = "Change in Normalized Wall Area") +
-  facet_wrap(~side) +
   scale_x_continuous(breaks = c(0, 1), labels = c("Start of Vessel", "End of Vessel"))+
   theme(legend.position = "none",
         axis.text.x = element_text(angle = -90)) +
   scale_color_manual(values = c("salmon", "cornflowerblue")) +
-  stat_smooth(aes(group = side), method = "loess", se = F, color = "black") -> wa_delta
+  stat_smooth(aes(group = 1), method = "loess", se = F, color = "black") -> wa_delta
 
 delta %>%
   ggplot(aes(x = t, y = wt_rat, group = plaque_id, color = side)) +
@@ -212,29 +207,28 @@ delta %>%
   labs(title = "Change in Width Ratio Between Time Points",
        x = "Time",
        y = "Change in Width Ratio") +
-  facet_wrap(~side) +
   scale_x_continuous(breaks = c(0, 1), labels = c("Start of Vessel", "End of Vessel"))+
   theme(legend.position = "none",
         axis.text.x = element_text(angle = -90)) +
   scale_color_manual(values = c("salmon", "cornflowerblue")) +
-  stat_smooth(aes(group = side), method = "loess", se = F, color = "black") -> wt_delta
+  stat_smooth(aes(group = 1), method = "loess", se = F, color = "black") -> wt_delta
 
 wa1|wt1;
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
 wa2|wt2;
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-15-2.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-11-2.png)<!-- -->
 
 ``` r
 wa_delta|wt_delta
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-15-3.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-11-3.png)<!-- -->
 
 ### Mean Functions
 
@@ -263,7 +257,7 @@ mus %>%
        color = "Function")
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ### Eigenfunctions
 
@@ -287,7 +281,7 @@ eigs %>%
        color = "Time Point")
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 ``` r
 
@@ -301,7 +295,7 @@ eigs %>%
        color = "Time Point")
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-17-2.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-13-2.png)<!-- -->
 
 ``` r
 
@@ -315,7 +309,7 @@ eigs %>%
        color = "Time Point")
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-17-3.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-13-3.png)<!-- -->
 
 ## MFPCA
 
@@ -377,11 +371,6 @@ heatmap(normalize_matrix(Betahat[1:52, 1:51]),
         main = "NW X NW",
         breaks = brk,
         col = scico::scico(n = 100, palette = "roma"))
-```
-
-![](WALLI_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
-
-``` r
 
 heatmap(normalize_matrix(Betahat[1:52, 52:102]), 
         Rowv = NA, Colv = NA,
@@ -391,11 +380,6 @@ heatmap(normalize_matrix(Betahat[1:52, 52:102]),
         main = "NW X WR",
         breaks = brk,
         col = scico::scico(n = 100, palette = "roma"))
-```
-
-![](WALLI_files/figure-gfm/unnamed-chunk-19-2.png)<!-- -->
-
-``` r
 
 heatmap(normalize_matrix(normBetahat[53:104, 1:51]), 
         Rowv = NA, Colv = NA,
@@ -405,11 +389,6 @@ heatmap(normalize_matrix(normBetahat[53:104, 1:51]),
         main = "WR X NW",
         breaks = brk,
         col = scico::scico(n = 100, palette = "roma"))
-```
-
-![](WALLI_files/figure-gfm/unnamed-chunk-19-3.png)<!-- -->
-
-``` r
 
 heatmap(normalize_matrix(normBetahat[53:104, 52:102]), 
         Rowv = NA, Colv = NA,
@@ -424,7 +403,7 @@ legend(x="right",
        fill= scico::scico(n = 3, palette = "roma"))
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-19-4.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-15-1.png)![](WALLI_files/figure-gfm/unnamed-chunk-15-2.png)![](WALLI_files/figure-gfm/unnamed-chunk-15-3.png)![](WALLI_files/figure-gfm/unnamed-chunk-15-4.png)
 
 ### 3D Plot
 
@@ -481,6 +460,19 @@ res_resp = FunOnFun::irregMFPCA(
 Bhat = FunOnFun::funOnFun(res_resp, res_pred)
 Betahat = FunOnFun::reconBeta(res_resp, res_pred, Bhat$Bhat)
 
+rvec[1] = "NW Start"
+rvec[52] = "NW End"
+rvec[53] = "WR Start"
+rvec[104] = "WR End"
+
+cvec[1] = "NW Start"
+cvec[51] = "NW End"
+cvec[52] = "WR Start"
+cvec[102] = "WR End"
+
+rownames(Betahat) = rvec
+colnames(Betahat) = cvec
+
 par(mfrow = c(2, 2))
 
 heatmap(normalize_matrix(Betahat[1:52, 1:51]),
@@ -491,11 +483,6 @@ heatmap(normalize_matrix(Betahat[1:52, 1:51]),
         main = "NW X NW",
         breaks = brk,
         col = scico::scico(n = 100, palette = "roma"))
-```
-
-![](WALLI_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
-
-``` r
 
 heatmap(normalize_matrix(Betahat[1:52, 52:102]),
         Rowv = NA, Colv = NA,
@@ -505,11 +492,6 @@ heatmap(normalize_matrix(Betahat[1:52, 52:102]),
         main = "NW X WR",
         breaks = brk,
         col = scico::scico(n = 100, palette = "roma"))
-```
-
-![](WALLI_files/figure-gfm/unnamed-chunk-22-2.png)<!-- -->
-
-``` r
 
 heatmap(normalize_matrix(Betahat[53:104, 1:51]),
         Rowv = NA, Colv = NA,
@@ -519,11 +501,6 @@ heatmap(normalize_matrix(Betahat[53:104, 1:51]),
         main = "WR X NW",
         breaks = brk,
         col = scico::scico(n = 100, palette = "roma"))
-```
-
-![](WALLI_files/figure-gfm/unnamed-chunk-22-3.png)<!-- -->
-
-``` r
 
 heatmap(normalize_matrix(Betahat[53:104, 52:102]),
         Rowv = NA, Colv = NA,
@@ -539,4 +516,4 @@ legend(x="right",
        fill= scico::scico(n = 3, palette = "roma"))
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-22-4.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-18-1.png)![](WALLI_files/figure-gfm/unnamed-chunk-18-2.png)![](WALLI_files/figure-gfm/unnamed-chunk-18-3.png)![](WALLI_files/figure-gfm/unnamed-chunk-18-4.png)
