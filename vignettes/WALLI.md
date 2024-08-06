@@ -143,8 +143,7 @@ delta %>%
        x = "Time",
        y = "Normalized Wall Area") +
   scale_x_continuous(breaks = c(0, 1), labels = c("Start of Vessel", "End of Vessel"))+
-  theme(legend.position = "none",
-        axis.text.x = element_text(angle = -90)) +
+  theme(axis.text.x = element_text(angle = -90)) +
   scale_color_manual(values = c("salmon", "cornflowerblue")) +
   stat_smooth(aes(group = 1), method = "loess", se = F, color = "black") -> wa1
 
@@ -216,19 +215,19 @@ delta %>%
 wa1|wt1;
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](WALLI_files/figure-gfm/plot-spag-1.png)<!-- -->
 
 ``` r
 wa2|wt2;
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
+![](WALLI_files/figure-gfm/plot-spag-2.png)<!-- -->
 
 ``` r
 wa_delta|wt_delta
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-8-3.png)<!-- -->
+![](WALLI_files/figure-gfm/plot-spag-3.png)<!-- -->
 
 ### Mean Functions
 
@@ -257,7 +256,7 @@ mus %>%
        color = "Function")
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](WALLI_files/figure-gfm/mean-funcs-1.png)<!-- -->
 
 ### Eigenfunctions
 
@@ -281,7 +280,7 @@ eigs %>%
        color = "Time Point")
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](WALLI_files/figure-gfm/eig-funcs-1.png)<!-- -->
 
 ``` r
 
@@ -295,7 +294,7 @@ eigs %>%
        color = "Time Point")
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-10-2.png)<!-- -->
+![](WALLI_files/figure-gfm/eig-funcs-2.png)<!-- -->
 
 ``` r
 
@@ -309,7 +308,7 @@ eigs %>%
        color = "Time Point")
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-10-3.png)<!-- -->
+![](WALLI_files/figure-gfm/eig-funcs-3.png)<!-- -->
 
 ## MFPCA
 
@@ -401,24 +400,7 @@ legend(x="right",
        fill= scico::scico(n = 3, palette = "roma"))
 ```
 
-<img src="WALLI_files/figure-gfm/unnamed-chunk-12-1.png" width="50%" /><img src="WALLI_files/figure-gfm/unnamed-chunk-12-2.png" width="50%" /><img src="WALLI_files/figure-gfm/unnamed-chunk-12-3.png" width="50%" /><img src="WALLI_files/figure-gfm/unnamed-chunk-12-4.png" width="50%" />
-
-### 3D Plot
-
-``` r
-# estimated_colorscale <- list(
-#   list(0, "rgb(255, 0, 0)"),
-#   list(1, "rgb(0, 255, 0)")
-# )
-# 
-# fig = plotly::plot_ly(showscale = F) %>% 
-#   plotly::add_surface(z = ~Betahat, 
-#                       cmin = min(Betahat),
-#                       cmax = max(Betahat),
-#                       colorscale = estimated_colorscale)
-# 
-# fig
-```
+<img src="WALLI_files/figure-gfm/first-beta-1.png" width="50%" /><img src="WALLI_files/figure-gfm/first-beta-2.png" width="50%" /><img src="WALLI_files/figure-gfm/first-beta-3.png" width="50%" /><img src="WALLI_files/figure-gfm/first-beta-4.png" width="50%" />
 
 ## CV for Optimal Number of Eigenfunctions
 
@@ -514,4 +496,4 @@ legend(x="right",
        fill= scico::scico(n = 3, palette = "roma"))
 ```
 
-<img src="WALLI_files/figure-gfm/unnamed-chunk-15-1.png" width="50%" /><img src="WALLI_files/figure-gfm/unnamed-chunk-15-2.png" width="50%" /><img src="WALLI_files/figure-gfm/unnamed-chunk-15-3.png" width="50%" /><img src="WALLI_files/figure-gfm/unnamed-chunk-15-4.png" width="50%" />
+<img src="WALLI_files/figure-gfm/rerun-reg-1.png" width="50%" /><img src="WALLI_files/figure-gfm/rerun-reg-2.png" width="50%" /><img src="WALLI_files/figure-gfm/rerun-reg-3.png" width="50%" /><img src="WALLI_files/figure-gfm/rerun-reg-4.png" width="50%" />
