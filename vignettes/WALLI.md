@@ -216,19 +216,19 @@ delta %>%
 wa1|wt1;
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
 wa2|wt2;
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-11-2.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
 
 ``` r
 wa_delta|wt_delta
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-11-3.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-8-3.png)<!-- -->
 
 ### Mean Functions
 
@@ -257,7 +257,7 @@ mus %>%
        color = "Function")
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ### Eigenfunctions
 
@@ -281,7 +281,7 @@ eigs %>%
        color = "Time Point")
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
 
@@ -295,7 +295,7 @@ eigs %>%
        color = "Time Point")
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-13-2.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-10-2.png)<!-- -->
 
 ``` r
 
@@ -309,7 +309,7 @@ eigs %>%
        color = "Time Point")
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-13-3.png)<!-- -->
+![](WALLI_files/figure-gfm/unnamed-chunk-10-3.png)<!-- -->
 
 ## MFPCA
 
@@ -361,8 +361,6 @@ normalize_matrix = function(mat){
 
 brk = seq(0, 1, length.out = 101)
 
-par(mfrow = c(2, 2))
-
 heatmap(normalize_matrix(Betahat[1:52, 1:51]),
         Rowv = NA, Colv = NA,
         scale = "none",
@@ -403,7 +401,7 @@ legend(x="right",
        fill= scico::scico(n = 3, palette = "roma"))
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-15-1.png)![](WALLI_files/figure-gfm/unnamed-chunk-15-2.png)![](WALLI_files/figure-gfm/unnamed-chunk-15-3.png)![](WALLI_files/figure-gfm/unnamed-chunk-15-4.png)
+<img src="WALLI_files/figure-gfm/unnamed-chunk-12-1.png" width="50%" /><img src="WALLI_files/figure-gfm/unnamed-chunk-12-2.png" width="50%" /><img src="WALLI_files/figure-gfm/unnamed-chunk-12-3.png" width="50%" /><img src="WALLI_files/figure-gfm/unnamed-chunk-12-4.png" width="50%" />
 
 ### 3D Plot
 
@@ -516,4 +514,4 @@ legend(x="right",
        fill= scico::scico(n = 3, palette = "roma"))
 ```
 
-![](WALLI_files/figure-gfm/unnamed-chunk-18-1.png)![](WALLI_files/figure-gfm/unnamed-chunk-18-2.png)![](WALLI_files/figure-gfm/unnamed-chunk-18-3.png)![](WALLI_files/figure-gfm/unnamed-chunk-18-4.png)
+<img src="WALLI_files/figure-gfm/unnamed-chunk-15-1.png" width="50%" /><img src="WALLI_files/figure-gfm/unnamed-chunk-15-2.png" width="50%" /><img src="WALLI_files/figure-gfm/unnamed-chunk-15-3.png" width="50%" /><img src="WALLI_files/figure-gfm/unnamed-chunk-15-4.png" width="50%" />
