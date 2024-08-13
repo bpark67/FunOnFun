@@ -349,18 +349,20 @@ cvec[102] = "WR End"
 rownames(Betahat) = rvec
 colnames(Betahat) = cvec
 
-normalize_matrix = function(mat){
-  (mat - min(mat))/(max(mat) - min(mat))
-}
+# normalize_matrix = function(mat, target_min = -1, target_max = 1) {
+#   max_abs_value <- max(abs(mat))
+#   normalized_mat <- mat / max_abs_value * target_max
+#   return(normalized_vec)
+# }
 
 # plotly::plot_ly(z = Betahat[1:52, 1:51],
 #                 type = "heatmap",
 #                 zmin = min(Betahat),
 #                 zmax = max(Betahat))
 
-brk = seq(0, 1, length.out = 101)
+brk = seq(-1, 1, length.out = 101)
 
-heatmap(normalize_matrix(Betahat[1:52, 1:51]),
+heatmap(scales::rescale_mid(Betahat[1:52, 1:51], to = c(-1, 1), mid = 0),
         Rowv = NA, Colv = NA,
         scale = "none",
         ylab = "Delta (TP2 - TP1)",
@@ -369,7 +371,7 @@ heatmap(normalize_matrix(Betahat[1:52, 1:51]),
         breaks = brk,
         col = scico::scico(n = 100, palette = "roma"))
 
-heatmap(normalize_matrix(Betahat[1:52, 52:102]), 
+heatmap(scales::rescale_mid(Betahat[1:52, 52:102], to = c(-1, 1), mid = 0),
         Rowv = NA, Colv = NA,
         scale = "none",
         ylab = "Delta (TP2 - TP1)",
@@ -378,7 +380,7 @@ heatmap(normalize_matrix(Betahat[1:52, 52:102]),
         breaks = brk,
         col = scico::scico(n = 100, palette = "roma"))
 
-heatmap(normalize_matrix(normBetahat[53:104, 1:51]), 
+heatmap(scales::rescale_mid(Betahat[53:104, 1:51], to = c(-1, 1), mid = 0),
         Rowv = NA, Colv = NA,
         scale = "none",
         ylab = "Delta (TP2 - TP1)",
@@ -387,7 +389,7 @@ heatmap(normalize_matrix(normBetahat[53:104, 1:51]),
         breaks = brk,
         col = scico::scico(n = 100, palette = "roma"))
 
-heatmap(normalize_matrix(normBetahat[53:104, 52:102]), 
+heatmap(scales::rescale_mid(Betahat[53:104, 52:102], to = c(-1, 1), mid = 0),
         Rowv = NA, Colv = NA,
         scale = "none",
         ylab = "Delta (TP2 - TP1)",
@@ -396,7 +398,7 @@ heatmap(normalize_matrix(normBetahat[53:104, 52:102]),
         breaks = brk,
         col = scico::scico(n = 100, palette = "roma"))
 legend(x="right", 
-       legend= c("0", "0.5", "1"), 
+       legend= c("-1", "0", "1"), 
        fill= scico::scico(n = 3, palette = "roma"))
 ```
 
@@ -455,7 +457,7 @@ colnames(Betahat) = cvec
 
 par(mfrow = c(2, 2))
 
-heatmap(normalize_matrix(Betahat[1:52, 1:51]),
+heatmap(scales::rescale_mid(Betahat[1:52, 1:51], to = c(-1, 1), mid = 0),
         Rowv = NA, Colv = NA,
         scale = "none",
         ylab = "Delta (TP2 - TP1)",
@@ -464,7 +466,7 @@ heatmap(normalize_matrix(Betahat[1:52, 1:51]),
         breaks = brk,
         col = scico::scico(n = 100, palette = "roma"))
 
-heatmap(normalize_matrix(Betahat[1:52, 52:102]),
+heatmap(scales::rescale_mid(Betahat[1:52, 52:102], to = c(-1, 1), mid = 0),
         Rowv = NA, Colv = NA,
         scale = "none",
         ylab = "Delta (TP2 - TP1)",
@@ -473,7 +475,7 @@ heatmap(normalize_matrix(Betahat[1:52, 52:102]),
         breaks = brk,
         col = scico::scico(n = 100, palette = "roma"))
 
-heatmap(normalize_matrix(Betahat[53:104, 1:51]),
+heatmap(scales::rescale_mid(Betahat[53:104, 1:51], to = c(-1, 1), mid = 0),
         Rowv = NA, Colv = NA,
         scale = "none",
         ylab = "Delta (TP2 - TP1)",
@@ -482,7 +484,7 @@ heatmap(normalize_matrix(Betahat[53:104, 1:51]),
         breaks = brk,
         col = scico::scico(n = 100, palette = "roma"))
 
-heatmap(normalize_matrix(Betahat[53:104, 52:102]),
+heatmap(scales::rescale_mid(Betahat[53:104, 52:102], to = c(-1, 1), mid = 0), 
         Rowv = NA, Colv = NA,
         scale = "none",
         ylab = "Delta (TP2 - TP1)",
@@ -492,7 +494,7 @@ heatmap(normalize_matrix(Betahat[53:104, 52:102]),
         col = scico::scico(n = 100, palette = "roma"))
 
 legend(x="right",
-       legend= c("0", "0.5", "1"),
+       legend= c("-1", "0", "1"),
        fill= scico::scico(n = 3, palette = "roma"))
 ```
 
