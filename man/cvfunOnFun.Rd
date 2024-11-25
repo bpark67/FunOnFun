@@ -4,7 +4,7 @@
 \alias{cvfunOnFun}
 \title{A function to choose optimal number of eigenfunctions via Cross-Validation}
 \usage{
-cvfunOnFun(seed, predictor, response, actual, folds = 10)
+cvfunOnFun(seed, predictor, response, actual, folds = 10, metric = "MSE")
 }
 \arguments{
 \item{seed}{Seed for reproducibility}
@@ -16,6 +16,8 @@ cvfunOnFun(seed, predictor, response, actual, folds = 10)
 \item{actual}{A data frame with the actual values of the response}
 
 \item{folds}{Number of folds for cross-validation. Default is 10}
+
+\item{metric}{The metric to use for cross-validation. Default is "MSE"}
 }
 \value{
 A matrix of mean squared errors for each combination of number of eigenfunctions

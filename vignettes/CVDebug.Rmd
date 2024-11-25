@@ -1,0 +1,207 @@
+---
+title: "CVDebug"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{CVDebug}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(FunOnFun)
+library(tidyverse)
+```
+
+```{r}
+rm(list = ls())
+```
+
+# Read in MFPCA Results
+
+```{r}
+load("res_pred.RData")
+load("res_resp.RData")
+load("tp2.RData")
+load("res_Y1.RData")
+load("res_Y2.RData")
+```
+
+```{r}
+.closest_t = function(actual_time, hat_time){
+  closest = rep(NA, length(actual_time))
+  for(i in 1:length(actual_time)){
+    closest[i] = which.min(abs(actual_time[i] - hat_time))
+  }
+
+  return(closest)
+}
+```
+
+
+# In Bag Testing
+
+```{r}
+time_points_x = nrow(res_pred$unstacked_phi) # 51
+time_points_y = nrow(res_resp$unstacked_phi) # 52
+nvars = nrow(res_pred$stacked_phi) / time_points_x # 2
+
+t1 = ncol(res_pred$xi) # 10
+t2 = ncol(res_resp$xi) # 10
+
+# Full Model
+i = j = 10
+
+# Scores
+X = res_pred$xi[, 1:i, drop = F]
+Y = res_resp$xi[, 1:j, drop = F]
+
+# ISSUE 1: Normality
+qqnorm(X[,1])
+qqnorm(Y[,1])
+
+
+
+# Eigenvalues
+eX = diag(res_pred$Dhat)[1:i]
+eY = diag(res_resp$Dhat)[1:j]
+
+# (OPTIONAL) Reapply normalizing scale
+X = X %*% diag(eX)
+Y = Y %*% diag(eY)
+
+# Eigenfunctions
+PhiX = res_pred$stacked_phi[, 1:i, drop = F]
+PhiY = res_resp$stacked_phi[, 1:j, drop = F]
+
+# Score by Score Regression
+mod = lm(Y ~ -1+X)
+B = mod$coefficients
+
+# ISSUE 2: Regression fit
+# Issue is pretty bad with i = j = 10
+heatmap(B, Rowv = NA, Colv = NA, scale = "none")
+
+# In Bag Estimation
+Yhat = X %*% B
+
+# ISSUE 3: Poor fit in estimating scores
+# Even when I decrease the number of components, fit gets very bad with many components
+vis = data.frame(
+  val = c(c(Y), c(Yhat)),
+  type = c(rep("Actual", 32*i), rep("Hat", 32*i)),
+  order = c(rep(1:i, each = 32), rep(1:i, each = 32)),
+  index = rep(1:32, i)
+)
+vis %>%
+  ggplot(aes(x = index, y = val, color = type))+
+  geom_point()+
+  geom_line()+
+  facet_wrap(~order, scales = "free_y")+
+  theme_bw()
+
+# Estimate original functional profile
+orighat = PhiY %*% t(Yhat) %>% as.data.frame()
+
+# Name for convenience
+colnames(orighat) = as.character(1:32)
+
+# Append Time column
+# Add slight lag for visualization purpose
+orighat$t = rep(seq(0, 1, length.out = time_points_y), nvars)
+orighat$t[53:104] = orighat$t[53:104] + 1.01
+
+# CHOOSE CASE HERE
+# CASE 6 is VERY PATHOLOGICAL
+case = 6
+
+# Visualize
+closest = .closest_t(tp2$Time[[case]], seq(0, 1, length.out = time_points_y))
+increment = rep(0:(nvars-1) * time_points_y, each = length(closest))
+final = rep(closest, nvars) + increment
+
+orighat_case = cbind(orighat[final, case], orighat[final, "t"]) %>%
+  as.data.frame() %>%
+  rename(val = V1, t = V2)
+
+orig_case = data.frame(
+  case = tp2[case, 3:(3+nvars-1)] %>% unlist() %>% unname() - c(res_Y1$mu, res_Y2$mu)[final],
+  t = orighat_case$t
+)
+
+orighat_case %>%
+  ggplot() +
+  geom_point(data = orighat_case, aes(x = t, y = val)) +
+  geom_line(data = orighat_case, aes(x = t, y = val)) +
+  geom_point(data = orig_case, aes(x = t, y = case), color = "red") +
+  geom_line(data = orig_case, aes(x = t, y = case), color = "red") +
+  theme_bw() +
+  labs(title = "Red: O, Black: O hat")
+
+SST = sum(orig_case^2)
+SSR = sum((orig_case-orighat_case)^2)
+(R2 = 1-SSR/SST)
+```
+
+## Check Scores
+
+```{r}
+df1 = as.data.frame(X[,1:2])
+df2 = as.data.frame(Y[,1:2])
+
+df_combined = rbind(
+  data.frame(id = row.names(df1), x = df1$V1, y = df1$V2, group = "TP1"),
+  data.frame(id = row.names(df1), x = df2$V1, y = df2$V2, group = "TP2")
+)
+df_arrows = merge(df1, df2, by = "row.names", suffixes = c("_1", "_2"))
+
+df_combined %>%
+  ggplot()+
+  geom_point(aes(x = x, y = y, color = group, size = abs(x-y)), alpha = 0.5) +
+  scale_color_manual(values = c("purple", "orange")) +
+  geom_segment(data = df_arrows, aes(x = V1_1, y = V2_1, xend = V1_2, yend = V2_2), 
+               arrow = arrow(length = unit(0.2, "cm")), color = "gray") +
+  theme_bw()
+```
+
+
+## Check Average Across Cases
+
+```{r}
+SSRs = rep(NA, 32)
+SSTs = rep(NA, 32)
+for(case in 1:32){
+  closest = .closest_t(tp2$Time[[case]], seq(0, 1, length.out = time_points_y))
+  increment = rep(0:(nvars-1) * time_points_y, each = length(closest))
+  final = rep(closest, nvars) + increment
+  
+  orighat_case = orighat[final, case]
+  
+  orig_case = data.frame(
+    case = tp2[case, 3:(3+nvars-1)] %>% unlist() %>% unname() - c(res_Y1$mu, res_Y2$mu)[final]
+  )
+  
+  SSTs[case] = sum(orig_case^2)
+  SSRs[case] = sum((orig_case-orighat_case)^2)
+}
+
+(meanR2 = 1 - mean(SSRs) / mean(SSTs))
+
+summary(SSRs)
+summary(SSTs)
+```
+
+
+
+
+
+
+
+
+

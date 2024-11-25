@@ -1,0 +1,383 @@
+---
+title: "Cross-Validation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cross-Validation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(FunOnFun)
+library(tidyverse)
+library(brolgar)
+library(fdapace)
+library(patchwork)
+```
+
+## Read Data
+
+```{r read-raw}
+# TODO: Integrate data to package
+df1 = read.csv("../../walli.csv")[c(1, 6, 7, 8, 9)] %>%
+  stats::na.omit() %>%
+  dplyr::arrange(plaque_id) %>%
+  dplyr::mutate(norm_wall = wa_1/(wa_1 + la_1),
+         wt_rat = max_wt_1/min_wt_1) %>%
+  FunOnFun::regularizeTime(id_col = "plaque_id") %>%
+  filter(max_wt_1 > 0) # Lose 13 observations that were all 0
+
+df2 = read.csv("../../walli.csv")[c(1, 15, 16, 17, 18)] %>%
+  stats::na.omit() %>%
+  dplyr::arrange(plaque_id) %>%
+  dplyr::mutate(norm_wall = wa_2/(wa_2 + la_2),
+         wt_rat = max_wt_2/min_wt_2) %>%
+  FunOnFun::regularizeTime(id_col = "plaque_id") %>%
+  filter(max_wt_2 > 0) # Different number of observations!
+```
+
+```{r subset-locs, warning = F}
+# WALLI-CLIN-018-L_ICA-MCA to WALLI-CLIN-018-L_ICA_MCA
+df1$plaque_id[df1$plaque_id == "WALLI-CLIN-018-L_ICA-MCA"] = "WALLI-CLIN-018-L_ICA_MCA"
+df2$plaque_id[df2$plaque_id == "WALLI-CLIN-018-L_ICA-MCA"] = "WALLI-CLIN-018-L_ICA_MCA"
+
+# Split Plaque ID by all hyphens.
+# Keep original Plaque ID column
+
+locs = df1 %>%
+  tidyr::separate(plaque_id, c("walli", "clinlong", "num", "loc"), sep = "-", remove = F) %>%
+  tidyr::separate(loc, c("side", "vessel"), sep = "_", remove = F)
+
+target = locs %>%
+  filter(clinlong == "LONG") %>%
+  filter(stringr::str_detect(loc, "ICA_MCA")) %>%
+  select(plaque_id, side) %>%
+  unique()
+```
+
+```{r filter-by-id}
+df1 = df1 %>%
+  filter(plaque_id %in% target$plaque_id) %>%
+  left_join(target, by = "plaque_id")
+df2 = df2 %>%
+  filter(plaque_id %in% target$plaque_id) %>%
+  left_join(target, by = "plaque_id")
+```
+
+Left Join the two dataframes on the Plaque ID and Time
+
+```{r create-delta}
+delta = df1 %>%
+  left_join(df2, by = c("plaque_id", "t", "side")) %>%
+  dplyr::select(plaque_id, t, side, norm_wall.x, wt_rat.x, norm_wall.y, wt_rat.y) %>%
+  dplyr::rename(norm_wall_x = norm_wall.x,
+         wt_rat_x = wt_rat.x,
+         norm_wall_y = norm_wall.y,
+         wt_rat_y = wt_rat.y) %>%
+  dplyr::mutate(
+    norm_wall = norm_wall_y - norm_wall_x,
+    wt_rat = wt_rat_y - wt_rat_x
+  ) %>%
+  na.omit()
+  # We omit any NA's here.
+```
+
+
+## Format Data
+
+```{r format-fpca}
+tp1 = delta %>% 
+  FunOnFun::fpcaFormat(id_col = "plaque_id", var_cols = c("norm_wall_x", "wt_rat_x"))
+colnames(tp1) = c("plaque_id", "Time", "norm_wall", "wt_rat")
+
+save(tp1, file = "tp1.RData")
+
+tp2 = delta  %>%
+  FunOnFun::fpcaFormat(id_col = "plaque_id", var_cols = c("norm_wall", "wt_rat"))
+
+save(tp2, file = "tp2.RData")
+```
+
+## Run FPCA
+
+```{r run-univariate, message=FALSE, warning = FALSE}
+res_X1 = fdapace::FPCA(
+  tp1$norm_wall,
+  tp1$Time,
+  list(dataType='Sparse', 
+       error=FALSE, 
+       kernel='epan', 
+       verbose=TRUE,
+       nRegGrid = 51)
+)
+
+save(res_X1, file = "res_X1.RData")
+
+res_X2 = fdapace::FPCA(
+  tp1$wt_rat,
+  tp1$Time,
+  list(dataType='Sparse', 
+       error=FALSE, 
+       kernel='epan', 
+       verbose=TRUE,
+       nRegGrid = 51)
+)
+
+save(res_X2, file = "res_X2.RData")
+
+res_Y1 = fdapace::FPCA(
+  tp2$norm_wall,
+  tp2$Time,
+  list(dataType='Sparse', 
+       error=FALSE, 
+       kernel='epan', 
+       verbose=TRUE,
+       nRegGrid = 52)
+)
+
+save(res_Y1, file = "res_Y1.RData")
+
+res_Y2 = fdapace::FPCA(
+  tp2$wt_rat,
+  tp2$Time,
+  list(dataType='Sparse', 
+       error=FALSE, 
+       kernel='epan', 
+       verbose=TRUE,
+       nRegGrid = 52)
+)
+
+save(res_Y2, file = "res_Y2.RData")
+```
+
+## MFPCA
+
+```{r mfpca}
+res_pred = FunOnFun::irregMFPCA(
+  components = 10,
+  split = T,
+  res_X1,
+  res_X2
+)
+
+save(res_pred, file = "res_pred.RData")
+
+res_resp = FunOnFun::irregMFPCA(
+  components = 10,
+  split = T,
+  res_Y1,
+  res_Y2
+)
+
+save(res_resp, file = "res_resp.RData")
+```
+
+
+## Helper Function
+
+```{r}
+.closest_t = function(actual_time, hat_time){
+  closest = rep(NA, length(actual_time))
+  for(i in 1:length(actual_time)){
+    closest[i] = which.min(abs(actual_time[i] - hat_time))
+  }
+
+  return(closest)
+}
+```
+
+## i = 10; j = 10
+
+```{r}
+time_points_x = nrow(res_pred$unstacked_phi)
+time_points_y = nrow(res_resp$unstacked_phi)
+nvars = nrow(res_pred$stacked_phi) / time_points_x
+
+# Folds
+set.seed(16)
+fld = caret::createFolds(1:nrow(res_pred$xi), k = 10, list = F)
+
+t1 = ncol(res_pred$xi)
+t2 = ncol(res_resp$xi)
+i=10; j=10
+
+
+X = res_pred$xi[, 1:i, drop = F]
+Y = res_resp$xi[, 1:j, drop = F]
+
+# BAKING IN EIGENVALUES TO THE SCORES
+eigX = diag(res_pred$Dhat)
+eigY = diag(res_resp$Dhat)
+
+# OPTION 1: Multiply each column of X and Y by eigX
+X = X %*% diag(eigX)
+Y = Y %*% diag(eigY)
+
+PhiX = res_pred$stacked_phi[, 1:i, drop = F]
+PhiY = res_resp$stacked_phi[, 1:j, drop = F]
+kfoldMSEs = rep(NA, 10)
+
+# WHERE FOR LOOP OVER FOLDS (k) STARTS
+k=1
+
+fld_case = which(fld == k, fld)
+
+# Regression on remaining 9 folds
+mod = stats::lm(Y[fld != k, ] ~ -1 + X[fld != k, ])
+
+# Extract coefficients
+B = mod %>% stats::coef()
+
+# Get IN BAG fitted values
+# NOTE: Even this Yhat is not too close to Y[fld != k, ]
+# One outlier in there
+Yhat = X[fld != k, , drop = F] %*% B
+
+# Find estimates of original NW and WR data
+# (52 + 52) X 2 %*% 2 X 28 #(In bag (out of fold) samples)
+# (52 + 52) X 28: Each column is a function for each sample
+orighat = PhiY %*% t(Yhat) %>% as.data.frame()
+
+# Step to name orighat
+nameCases = c(1:32)[!(1:32 %in% fld_case)]
+colnames(orighat) = as.character(nameCases)
+
+# Append Time column
+orighat$t = rep(seq(0, 1, length.out = time_points_y), nvars)
+orighat$t[53:104] = orighat$t[53:104] + 1.01
+
+# CHOOSE CASE; Here, let us choose them by order
+case = nameCases[5]
+# SOME PATHOLOGICAL CASES; 5, 6
+# SOME GREAT FITS; 7
+# REPRESENTATIVE; 8
+
+closest = .closest_t(tp2$Time[[case]], seq(0, 1, length.out = time_points_y))
+increment = rep(0:(nvars-1) * time_points_y, each = length(closest))
+final = rep(closest, nvars) + increment
+
+orighat_case = orighat[final, c(which(case == nameCases), 29)]
+
+orig_case = data.frame(
+  case = tp2[case, 3:(3+nvars-1)] %>% unlist() %>% unname() - c(res_Y1$mu, res_Y2$mu)[final],
+  t = orighat_case$t
+)
+```
+
+### Visualize
+
+```{r}
+SST = sum(orig_case^2)
+SSR = sum((orig_case-orighat_case)^2)
+(R2 = 1-SSR/SST)
+
+orighat %>%
+  ggplot() +
+  geom_line(aes(x = t, y = !!sym(as.character(case)))) +
+  geom_point(data = orig_case, aes(x = t, y = case), color = "red") +
+  geom_point(data = orighat_case, aes(x = t, y = !!sym(as.character(case)))) +
+  theme_bw() +
+  labs(title = "Red: O, Black: O hat")
+```
+
+## Average SSR and SST
+
+```{r}
+SSRs = rep(NA, length(nameCases))
+SSTs = rep(NA, length(nameCases))
+for(case in nameCases){
+  closest = .closest_t(tp2$Time[[case]], seq(0, 1, length.out = time_points_y))
+  increment = rep(0:(nvars-1) * time_points_y, each = length(closest))
+  final = rep(closest, nvars) + increment
+  
+  orighat_case = orighat[final, which(case == nameCases)]
+  
+  orig_case = data.frame(
+    case = tp2[case, 3:(3+nvars-1)] %>% unlist() %>% unname() - c(res_Y1$mu, res_Y2$mu)[final]
+  )
+  
+  SSTs[which(case == nameCases)] = sum(orig_case^2)
+  SSRs[which(case == nameCases)] = sum((orig_case-orighat_case)^2)
+}
+```
+
+
+
+
+## CV Setup (OOB)
+
+```{r}
+# Time Points and Predictors
+fmatrix = matrix(nrow = t1, ncol = t2)
+for(i in 1:t1){
+  for(j in 1:t2){
+    # Subset Data and EigenFunctions
+    X = res_pred$xi[, 1:i, drop = F]
+    Y = res_resp$xi[, 1:j, drop = F]
+    PhiX = res_pred$stacked_phi[, 1:i, drop = F]
+    PhiY = res_resp$stacked_phi[, 1:j, drop = F]
+    kfoldR2s = rep(NA, 10)
+    
+    # Loop through all folds
+    for(k in 1:10){
+      fld_case = which(fld == k, fld)
+
+      # Regression on remaining 9 folds
+      mod = stats::lm(Y[fld != k, ] ~ -1 + X[fld != k, ])
+      
+      # Extract coefficients
+      B = mod %>% stats::coef()
+      
+      # Get in bag fitted values
+      # NOTE: Even this Yhat is not too close to Y[fld != k, ]
+      # One outlier in there
+      Yhat = X[fld == k, , drop = F] %*% B
+      
+      # Find estimates of original NW and WR data
+      # (52 + 52) X 2 %*% 2 X 28 #(In bag (out of fold) samples)
+      # (52 + 52) X 28: Each column is a function for each sample
+      orighat = PhiY %*% t(Yhat) %>% as.data.frame()
+      
+      # Step to name orighat
+      nameCases = c(1:32)[(1:32 %in% fld_case)]
+      colnames(orighat) = nameCases
+      
+      # Append Time column
+      orighat$t = rep(seq(0, 1, length.out = time_points_y), nvars)
+      
+      # Now for each case in the bag, we must match each function value to its closest estimate
+      # For all cases in the fold, we are taking the average of SSTs and SSRs
+      SSTs = rep(NA, sum(fld == k))
+      SSRs = rep(NA, sum(fld == k))
+      for (case in nameCases){
+            # Find closest function values from our estimated functions
+            closest = .closest_t(tp2$Time[[case]], seq(0, 1, length.out = time_points_y))
+            increment = rep(0:(nvars-1) * time_points_y, each = length(closest))
+
+            final = rep(closest, nvars) + increment
+
+            orighat_case = orighat[final, which(case == nameCases)]
+            orig_case = tp2[case, 3:(3+nvars-1)] %>% unlist() %>% unname() - c(res_Y1$mu, res_Y2$mu)[final]
+
+            # The mean function is a 0 function.
+            SSTs[which(case == nameCases)] = sum(orig_case^2)
+            SSRs[which(case == nameCases)] = sum((orig_case-orighat_case)^2)
+
+      }
+      kfoldR2s[k] = 1 - mean(SSRs)/mean(SSTs)
+    }
+    fmatrix[i, j] = mean(kfoldR2s)
+  }
+}
+```
+
+
+
+

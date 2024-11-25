@@ -1,0 +1,281 @@
+---
+title: "WALLI2"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{WALLI2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(FunOnFun)
+library(tidyverse)
+library(brolgar)
+library(fdapace)
+```
+
+```{r}
+rm(list = ls())
+```
+
+
+# Read Data
+
+```{r, warning = F}
+df1 = read.csv("../../walli.csv")[c(1, 6, 7, 8, 9)] %>%
+  stats::na.omit() %>%
+  dplyr::arrange(plaque_id) %>%
+  FunOnFun::regularizeTime(id_col = "plaque_id") %>%
+  filter(max_wt_1 > 0) # Lose 13 observations that were all 0
+
+df2 = read.csv("../../walli.csv")[c(1, 15, 16, 17, 18)] %>%
+  stats::na.omit() %>%
+  dplyr::arrange(plaque_id) %>%
+  FunOnFun::regularizeTime(id_col = "plaque_id") %>%
+  filter(max_wt_2 > 0) # Different number of observations!
+
+# WALLI-CLIN-018-L_ICA-MCA to WALLI-CLIN-018-L_ICA_MCA
+df1$plaque_id[df1$plaque_id == "WALLI-CLIN-018-L_ICA-MCA"] = "WALLI-CLIN-018-L_ICA_MCA"
+df2$plaque_id[df2$plaque_id == "WALLI-CLIN-018-L_ICA-MCA"] = "WALLI-CLIN-018-L_ICA_MCA"
+
+# Split Plaque ID by all hyphens.
+# Keep original Plaque ID column
+
+locs = df1 %>%
+  tidyr::separate(plaque_id, c("walli", "clinlong", "num", "loc"), sep = "-", remove = F) %>%
+  tidyr::separate(loc, c("side", "vessel"), sep = "_", remove = F)
+
+target = locs %>%
+  filter(clinlong == "LONG") %>%
+  filter(stringr::str_detect(loc, "ICA_MCA")) %>%
+  select(plaque_id, side) %>%
+  unique()
+
+df1 = df1 %>%
+  filter(plaque_id %in% target$plaque_id) %>%
+  left_join(target, by = "plaque_id")
+df2 = df2 %>%
+  filter(plaque_id %in% target$plaque_id) %>%
+  left_join(target, by = "plaque_id")
+
+delta = df1 %>%
+  left_join(df2, by = c("plaque_id", "t", "side")) %>%
+  dplyr::select(plaque_id, t, side, la_1, wa_1, la_2, wa_2) %>% # max_wt_1, min_wt_1, max_wt_2, min_wt_2
+  dplyr::mutate(
+    la_del = la_2 - la_1,
+    wa_del = wa_2 - wa_1
+  ) %>%
+  na.omit()
+```
+
+# Format Data
+
+```{r}
+tp1 = delta %>% 
+  FunOnFun::fpcaFormat(id_col = "plaque_id", var_cols = c("la_1", "wa_1"))
+
+tp2 = delta  %>%
+  FunOnFun::fpcaFormat(id_col = "plaque_id", var_cols = c("la_del", "wa_del"))
+```
+
+# Run FPCA
+
+```{r}
+res_X1 = fdapace::FPCA(
+  tp1$la_1,
+  tp1$Time,
+  list(dataType='Sparse', 
+       error=FALSE, 
+       kernel='epan', 
+       verbose=TRUE,
+       nRegGrid = 51)
+)
+
+res_X2 = fdapace::FPCA(
+  tp1$wa_1,
+  tp1$Time,
+  list(dataType='Sparse', 
+       error=FALSE, 
+       kernel='epan', 
+       verbose=TRUE,
+       nRegGrid = 51)
+)
+
+res_Y1 = fdapace::FPCA(
+  tp2$la_del,
+  tp2$Time,
+  list(dataType='Sparse', 
+       error=FALSE, 
+       kernel='epan', 
+       verbose=TRUE,
+       nRegGrid = 52)
+)
+
+res_Y2 = fdapace::FPCA(
+  tp2$wa_del,
+  tp2$Time,
+  list(dataType='Sparse', 
+       error=FALSE, 
+       kernel='epan', 
+       verbose=TRUE,
+       nRegGrid = 52)
+)
+```
+
+# Plot Data
+
+## Mean Functions
+
+```{r mean-funcs, warning = F, message = F}
+mus = matrix(NA, nrow = 52, ncol = 8)
+mus[1:51,1] = seq(0, 1, length.out = 51)
+mus[1:51,2] = res_X1$mu
+mus[1:51,3] = seq(0, 1, length.out = 51)
+mus[1:51,4] = res_X2$mu
+mus[1:52,5] = seq(0, 1, length.out = 52)
+mus[1:52,6] = res_Y1$mu
+mus[1:52,7] = seq(0, 1, length.out = 52)
+mus[1:52,8] = res_Y2$mu
+mus = as.data.frame(mus)
+
+mus %>%
+  ggplot()+
+  geom_line(aes(x = V1, y = V2, color = "Lumen Area", linetype = "TP1")) +
+  geom_line(aes(x = V3, y = V4, color = "Wall Area", linetype = "TP1")) +
+  geom_line(aes(x = V5, y = V6, color = "Lumen Area", linetype = "Delta")) +
+  geom_line(aes(x = V7, y = V8, color = "Wall Area", linetype = "Delta")) +
+  theme_bw() +
+  labs(title = "Mean Functions",
+       x = "Time",
+       y = "Mean Function Value",
+       color = "Function")
+
+```
+
+# MFPCA
+
+```{r}
+res_pred = FunOnFun::irregMFPCA(
+  components = 10,
+  split = T,
+  res_X1,
+  res_X2
+)
+
+res_resp = FunOnFun::irregMFPCA(
+  components = 10,
+  split = T,
+  res_Y1,
+  res_Y2
+)
+```
+
+## Cross Validation
+
+```{r}
+cvMatrix = FunOnFun::cvfunOnFun(
+  seed = 16,
+  predictor = res_pred,
+  response = res_resp,
+  actual = tp2,
+  folds = 10,
+  metric = "MSE"
+)
+
+# Row is for TP1, Col is for TP2
+which(cvMatrix == min(cvMatrix), 
+      arr.ind = T)
+```
+
+## Rerun Regression
+
+```{r}
+res_pred = FunOnFun::irregMFPCA(
+  components = 1,
+  split = T,
+  res_X1,
+  res_X2
+)
+
+res_resp = FunOnFun::irregMFPCA(
+  components = 2,
+  split = T,
+  res_Y1,
+  res_Y2
+)
+
+Bhat = FunOnFun::funOnFun(res_resp, res_pred)
+Betahat = FunOnFun::reconBeta(res_resp, res_pred, Bhat$Bhat)
+
+rvec = rep(NA, 104)
+cvec = rep(NA, 102)
+
+rvec[1] = "LA Start"
+rvec[52] = "LA End"
+rvec[53] = "WA Start"
+rvec[104] = "WA End"
+
+cvec[1] = "LA Start"
+cvec[51] = "LA End"
+cvec[52] = "WA Start"
+cvec[102] = "WA End"
+
+rownames(Betahat) = rvec
+colnames(Betahat) = cvec
+brk = seq(-1, 1, length.out = 101)
+
+
+par(mfrow = c(2, 2))
+
+heatmap(scales::rescale_mid(Betahat[1:52, 1:51], to = c(-1, 1), mid = 0),
+        Rowv = NA, Colv = NA,
+        scale = "none",
+        ylab = "Delta (TP2 - TP1)",
+        xlab = "Time Point 1",
+        main = "LA X LA",
+        breaks = brk,
+        col = scico::scico(n = 100, palette = "roma"))
+
+heatmap(scales::rescale_mid(Betahat[1:52, 52:102], to = c(-1, 1), mid = 0),
+        Rowv = NA, Colv = NA,
+        scale = "none",
+        ylab = "Delta (TP2 - TP1)",
+        xlab = "Time Point 1",
+        main = "LA X WA",
+        breaks = brk,
+        col = scico::scico(n = 100, palette = "roma"))
+
+heatmap(scales::rescale_mid(Betahat[53:104, 1:51], to = c(-1, 1), mid = 0),
+        Rowv = NA, Colv = NA,
+        scale = "none",
+        ylab = "Delta (TP2 - TP1)",
+        xlab = "Time Point 1",
+        main = "WA X LA",
+        breaks = brk,
+        col = scico::scico(n = 100, palette = "roma"))
+
+heatmap(scales::rescale_mid(Betahat[53:104, 52:102], to = c(-1, 1), mid = 0), 
+        Rowv = NA, Colv = NA,
+        scale = "none",
+        ylab = "Delta (TP2 - TP1)",
+        xlab = "Time Point 2",
+        main = "WA X WA",
+        breaks = brk,
+        col = scico::scico(n = 100, palette = "roma"))
+
+legend(x="right",
+       legend= c("-1", "0", "1"),
+       fill= scico::scico(n = 3, palette = "roma"))
+```
+
+
+
+
+
