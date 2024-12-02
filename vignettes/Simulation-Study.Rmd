@@ -1,8 +1,6 @@
 ---
 title: "Simulation-Study"
-output: 
-  rmarkdown::html_vignette: default
-  github_document: default
+output: rmarkdown::github_document
 vignette: >
   %\VignetteIndexEntry{Simulation-Study}
   %\VignetteEngine{knitr::rmarkdown}
